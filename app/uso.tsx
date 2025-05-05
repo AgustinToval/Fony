@@ -14,8 +14,6 @@ export default function Uso() {
 
     const seleccionarUso = (tipo: string) => {
     console.log('Uso seleccionado:', tipo);
-    // Más adelante podés guardar esta info
-    // Por ahora vamos a una pantalla "subuso" que aún crearemos
     router.push({ pathname: '/subuso', params: { uso: tipo } });
     };
 

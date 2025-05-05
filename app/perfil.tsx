@@ -13,8 +13,7 @@ export default function Perfil() {
 
     const seleccionarPerfil = (tipo: string) => {
     console.log('Perfil seleccionado:', tipo);
-    // Más adelante podrías guardar esto en contexto o AsyncStorage
-    router.push({ pathname: '/uso' }); // Navegación a la próxima pantalla
+    router.push({ pathname: '/uso' }); 
     };
 
     return (
