@@ -4,6 +4,11 @@ import React, { createContext, useContext, useState } from 'react';
 type Preferencias = {
     uso: string;
     sliders: Record<string, number>;
+    presupuesto?: number;
+    movilElegido?: string;
+    marcaPreferida?: string;
+    colorPreferido?: string;
+    tamanoPreferido?: string;
 };
 
 type ContextType = {

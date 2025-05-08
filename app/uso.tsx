@@ -19,7 +19,7 @@ export default function Uso() {
 
     return (
     <View style={styles.container}>
-        <Text style={styles.title}>¿Para qué vas a usar tu nuevo celular?</Text>
+        <Text style={styles.title}>¿Que uso principal le daras a tu nuevo celular?</Text>
         {usos.map((uso) => (
         <Pressable
             key={uso.value}

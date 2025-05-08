@@ -20,7 +20,7 @@ export default function Subuso() {
         uso: uso as string,
         sliders: valores,
     });
-    router.push('/resultado');
+    router.push('/disponibilidad');
     };
 
     const slidersPorUso: Record<string, { label: string; key: string }[]> = {
