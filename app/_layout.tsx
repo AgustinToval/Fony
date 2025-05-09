@@ -1,3 +1,4 @@
+import { AppSettingsProvider, useAppSettings } from '@/context/AppSettingsContext';
 import { UserPreferencesProvider } from '@/context/UserPreferencesContext';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -5,11 +6,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function InnerLayout() {
+  const { settings: config } = useAppSettings();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -17,15 +15,22 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <UserPreferencesProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={config.modoOscuro ? DarkTheme : DefaultTheme}>
+      <UserPreferencesProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="perfil" options={{ title: 'Seleccioná tu perfil' }} />
+          <Stack.Screen name="perfil" options={{ title: 'Selecciona tu perfil' }} />
         </Stack>
         <StatusBar style="auto" />
-      </ThemeProvider>
-    </UserPreferencesProvider>
+      </UserPreferencesProvider>
+    </ThemeProvider>
   );
-  
+}
+
+export default function RootLayout() {
+  return (
+  <AppSettingsProvider>
+    <InnerLayout />
+  </AppSettingsProvider>
+  );
 }

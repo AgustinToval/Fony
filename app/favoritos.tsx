@@ -83,7 +83,7 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         <Text style={styles.title}>⭐ Tus favoritos</Text>
 
         {favoritos.length === 0 ? (
-            <Text style={styles.empty}>No guardaste ningún dispositivo aún.</Text>
+            <Text style={styles.empty}>No se guardado ningún dispositivo aún.</Text>
         ) : (
             <>
             <Pressable style={styles.clearButton} onPress={vaciarFavoritos}>
