@@ -38,7 +38,7 @@ export default function Sugerencias() {
     useEffect(() => {
     const celulares = celularesData as Celular[];
 
-    // Filtro estricto
+    
     let resultados = celulares.filter((cel) => {
         const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
         const coincideUso = cel.usoIdeal.includes(preferencias.uso);
@@ -55,7 +55,6 @@ export default function Sugerencias() {
         return;
     }
 
-    // Filtro relajado (solo presupuesto + uso)
     resultados = celulares.filter((cel) => {
         const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
         const coincideUso = cel.usoIdeal.includes(preferencias.uso);
@@ -69,7 +68,6 @@ export default function Sugerencias() {
         return;
     }
 
-    // Si no hay coincidencias, mostrar genéricos
     setUsoFiltroFlexible(true);
     setSinCoincidencias(true);
     setSugeridos(celulares.slice(0, 3));

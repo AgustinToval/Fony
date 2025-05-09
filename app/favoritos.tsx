@@ -48,6 +48,36 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         Alert.alert('Eliminado de favoritos');
     };
 
+    const confirmarEliminar = (id: string) => {
+        Alert.alert(
+        '¿Eliminar favorito?',
+        '¿Estás seguro de que querés eliminar este dispositivo de favoritos?',
+        [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Eliminar', style: 'destructive', onPress: () => borrarFavorito(id) },
+        ]
+        );
+    };
+
+    const vaciarFavoritos = async () => {
+        Alert.alert(
+        'Vaciar todos los favoritos',
+        '¿Estás seguro de que querés eliminar todos los favoritos?',
+        [
+            { text: 'Cancelar', style: 'cancel' },
+            {
+            text: 'Sí, eliminar',
+            style: 'destructive',
+            onPress: async () => {
+                await AsyncStorage.removeItem('favoritos');
+                setFavoritos([]);
+                Alert.alert('Favoritos eliminados');
+            },
+            },
+        ]
+        );
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>⭐ Tus favoritos</Text>
@@ -55,21 +85,27 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         {favoritos.length === 0 ? (
             <Text style={styles.empty}>No guardaste ningún dispositivo aún.</Text>
         ) : (
-            favoritos.map((item) => (
-            <View key={item.id} style={styles.card}>
+            <>
+            <Pressable style={styles.clearButton} onPress={vaciarFavoritos}>
+                <Text style={styles.clearText}>🗑️ Vaciar todos</Text>
+            </Pressable>
+
+            {favoritos.map((item) => (
+                <View key={item.id} style={styles.card}>
                 <Image source={getImage(item.id)} style={styles.image} />
                 <Text style={styles.name}>{item.nombre}</Text>
                 <Text style={styles.summary}>{item.resumen}</Text>
 
                 <Pressable style={styles.button} onPress={() => verDetalle(item.nombre)}>
-                <Text style={styles.buttonText}>Ver detalles</Text>
+                    <Text style={styles.buttonText}>Ver detalles</Text>
                 </Pressable>
 
-                <Pressable style={styles.deleteButton} onPress={() => borrarFavorito(item.id)}>
-                <Text style={styles.deleteText}>Eliminar</Text>
+                <Pressable style={styles.deleteButton} onPress={() => confirmarEliminar(item.id)}>
+                    <Text style={styles.deleteText}>Eliminar</Text>
                 </Pressable>
-            </View>
-            ))
+                </View>
+            ))}
+            </>
         )}
         </ScrollView>
     );
@@ -87,4 +123,6 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
     buttonText: { color: '#fff', textAlign: 'center' },
     deleteButton: { backgroundColor: '#dc2626', padding: 8, borderRadius: 8, width: '80%' },
     deleteText: { color: '#fff', textAlign: 'center' },
+    clearButton: { backgroundColor: '#e11d48', padding: 10, borderRadius: 10, marginBottom: 20 },
+    clearText: { color: '#fff', fontSize: 14 },
     });

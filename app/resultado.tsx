@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-    // 🔧 Imagen por ID (no usar require dinámico)
     const getImage = (filename: string) => {
     switch (filename) {
         case 's23': return require('@/assets/images/s23.png');

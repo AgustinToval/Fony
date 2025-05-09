@@ -29,7 +29,7 @@ export default function Preferencias() {
 
     return (
     <View style={styles.container}>
-        <Text style={styles.title}>¿Preferís una marca específica?</Text>
+        <Text style={styles.title}>¿Prefieres una marca específica?</Text>
         <View style={styles.selector}>
         <Pressable onPress={() => setUsarMarca(true)} style={usarMarca ? styles.selected : styles.option}>
             <Text>Sí</Text>
@@ -49,7 +49,7 @@ export default function Preferencias() {
         </Picker>
         )}
 
-        <Text style={styles.title}>¿Preferís un color específico?</Text>
+        <Text style={styles.title}>¿Prefieres un color específico?</Text>
         <View style={styles.selector}>
         <Pressable onPress={() => setUsarColor(true)} style={usarColor ? styles.selected : styles.option}>
             <Text>Sí</Text>
@@ -69,7 +69,7 @@ export default function Preferencias() {
         </Picker>
         )}
 
-        <Text style={styles.title}>¿Preferís un tamaño específico?</Text>
+        <Text style={styles.title}>¿Prefieres un tamaño específico?</Text>
         <View style={styles.selector}>
         <Pressable onPress={() => setUsarTamano(true)} style={usarTamano ? styles.selected : styles.option}>
             <Text>Sí</Text>

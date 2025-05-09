@@ -8,14 +8,14 @@ export default function Disponibilidad() {
     const router = useRouter();
     const { setPreferencias, preferencias } = useUserPreferences();
 
-  const [monto, setMonto] = useState(500); // valor inicial (en dólares o tu moneda)
+    const [monto, setMonto] = useState(500);
 
     const continuar = () => {
     setPreferencias({
         ...preferencias,
         presupuesto: monto,
     });
-    router.push('/preferencias'); // siguiente paso después del presupuesto
+    router.push('/preferencias'); 
     };
 
     return (
