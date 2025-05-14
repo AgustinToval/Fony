@@ -1,32 +1,30 @@
-import { useAppSettings } from '@/hooks/useAppSettings';
+    import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Home() {
     const router = useRouter();
-    const { settings: config } = useAppSettings();
+    const { settings } = useAppSettings();
+    const { colors, dark } = useTheme();
+console.log('🔍 TEMA ACTUAL:', dark ? 'Dark' : 'Light');
 
-
-    const titleFont = getFontSize('large', config.tamanioLetra);
-    const subtitleFont = getFontSize('medium', config.tamanioLetra);
-    const buttonFont = getFontSize('medium', config.tamanioLetra);
-
-    const isDark = config.modoOscuro;
-    const bgColor = isDark ? '#111' : '#fff';
-    const textColor = isDark ? '#eee' : '#1e3a8a';
+    const titleFont = getFontSize('large', settings.tamanioLetra);
+    const subtitleFont = getFontSize('medium', settings.tamanioLetra);
+    const buttonFont = getFontSize('medium', settings.tamanioLetra);
 
     return (
-        <View style={[styles.container, { backgroundColor: bgColor }]}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Pressable style={styles.settingsIcon} onPress={() => router.push('/configuracion')}>
-            <Ionicons name="settings-outline" size={26} color={textColor} />
+            <Ionicons name="settings-outline" size={26} color={colors.text} />
         </Pressable>
 
-        <Text style={[styles.title, { fontSize: titleFont, color: textColor }]}>
+        <Text style={[styles.title, { fontSize: titleFont, color: colors.text }]}>
             ¡Bienvenido a Fony!
         </Text>
-        <Text style={[styles.subtitle, { fontSize: subtitleFont, color: isDark ? '#ccc' : '#444' }]}>
+        <Text style={[styles.subtitle, { fontSize: subtitleFont, color: colors.text }]}>
             ¿Qué quieres hacer hoy?
         </Text>
 

@@ -1,66 +1,81 @@
-import { useUserPreferences } from '@/context/UserPreferencesContext';
+    import { useUserPreferences } from '@/context/UserPreferencesContext';
+import { useAppSettings } from '@/hooks/useAppSettings';
+import { getFontSize } from '@/utils/getFontSize';
 import Slider from '@react-native-community/slider';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
-export default function Subuso() {
+    export default function Subuso() {
     const { uso } = useLocalSearchParams();
     const router = useRouter();
     const { setPreferencias } = useUserPreferences();
+    const { settings } = useAppSettings();
+
+    const isDark = settings.modoOscuro;
+    const bgColor = isDark ? '#111' : '#fff';
+    const textColor = isDark ? '#eee' : '#1e3a8a';
+    const labelColor = isDark ? '#ccc' : '#333';
+
+    const titleFont = getFontSize('large', settings.tamanioLetra);
+    const labelFont = getFontSize('medium', settings.tamanioLetra);
+    const buttonFont = getFontSize('medium', settings.tamanioLetra);
 
     const [valores, setValores] = useState<Record<string, number>>({});
 
     const handleChange = (key: string, value: number) => {
-    setValores((prev) => ({ ...prev, [key]: value }));
+        setValores((prev) => ({ ...prev, [key]: value }));
     };
 
     const continuar = () => {
-    setPreferencias({
+        setPreferencias({
         uso: uso as string,
         sliders: valores,
-    });
-    router.push('/disponibilidad');
+        });
+        router.push('/disponibilidad');
     };
 
     const slidersPorUso: Record<string, { label: string; key: string }[]> = {
-    juegos: [
+        juegos: [
         { label: 'Gráficos avanzados', key: 'graficos' },
         { label: 'Juegos casuales', key: 'casuales' },
         { label: 'Velocidad y respuesta', key: 'rendimiento' },
-    ],
-    multimedia: [
+        ],
+        multimedia: [
         { label: 'Calidad de la cámara', key: 'camara' },
         { label: 'Video y grabación', key: 'video' },
         { label: 'Edición de fotos', key: 'edicion' },
-    ],
-    trabajo: [
+        ],
+        trabajo: [
         { label: 'Aplicaciones de oficina', key: 'oficina' },
         { label: 'Multitarea', key: 'multitarea' },
         { label: 'Seguridad', key: 'seguridad' },
-    ],
-    redes: [
+        ],
+        redes: [
         { label: 'Fluidez en apps sociales', key: 'fluidez' },
         { label: 'Carga de imágenes y videos', key: 'carga' },
         { label: 'Notificaciones y multitarea', key: 'notificaciones' },
-    ],
-    otro: [
+        ],
+        otro: [
         { label: 'Duración de batería', key: 'bateria' },
         { label: 'Facilidad de uso', key: 'facilidad' },
         { label: 'Almacenamiento', key: 'almacenamiento' },
-    ],
+        ],
     };
 
     const sliders = slidersPorUso[uso as string] || [];
 
     return (
-    <View style={styles.container}>
-        <Text style={styles.title}>Indica la importancia para este uso:</Text>
+        <View style={[styles.container, { backgroundColor: bgColor }]}>
+        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
+            Indica la importancia para este uso:
+        </Text>
+
         {sliders.map((item) => (
-        <View key={item.key} style={styles.sliderGroup}>
-            <Text style={styles.label}>{item.label}</Text>
+            <View key={item.key} style={styles.sliderGroup}>
+            <Text style={[styles.label, { color: labelColor, fontSize: labelFont }]}>{item.label}</Text>
             {Platform.OS !== 'web' ? (
-            <Slider
+                <Slider
                 value={valores[item.key] || 5}
                 onValueChange={(value) => handleChange(item.key, value)}
                 minimumValue={0}
@@ -68,25 +83,25 @@ export default function Subuso() {
                 step={1}
                 minimumTrackTintColor="#2563eb"
                 maximumTrackTintColor="#ccc"
-            />
+                />
             ) : (
-            <Text style={styles.label}>[Control no disponible en versión web]</Text>
+                <Text style={[styles.label, { color: labelColor }]}>[Control no disponible en versión web]</Text>
             )}
-        </View>
+            </View>
         ))}
 
         <Pressable style={styles.button} onPress={continuar}>
-        <Text style={styles.buttonText}>Continuar</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>Continuar</Text>
         </Pressable>
-    </View>
+        </View>
     );
-}
+    }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 30, backgroundColor: '#fff' },
-    title: { fontSize: 22, fontWeight: 'bold', color: '#1e3a8a', marginBottom: 20, textAlign: 'center' },
+    const styles = StyleSheet.create({
+    container: { flex: 1, padding: 30 },
+    title: { fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
     sliderGroup: { marginBottom: 30 },
-    label: { fontSize: 16, color: '#333', marginBottom: 5 },
+    label: { marginBottom: 5 },
     button: { backgroundColor: '#2563eb', padding: 15, borderRadius: 10, marginTop: 20 },
-    buttonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
-});
+    buttonText: { color: '#fff', textAlign: 'center' },
+    });

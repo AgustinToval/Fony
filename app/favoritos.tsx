@@ -1,4 +1,6 @@
     import { useUserPreferences } from '@/context/UserPreferencesContext';
+import { useAppSettings } from '@/hooks/useAppSettings';
+import { getFontSize } from '@/utils/getFontSize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -20,6 +22,12 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
     const [favoritos, setFavoritos] = useState<any[]>([]);
     const router = useRouter();
     const { setPreferencias, preferencias } = useUserPreferences();
+    const { settings: config } = useAppSettings();
+
+    const bgColor = config.modoOscuro ? '#111' : '#fff';
+    const textColor = config.modoOscuro ? '#eee' : '#1e3a8a';
+    const cardBg = config.modoOscuro ? '#222' : '#f0f0f0';
+    const fontSize = getFontSize('medium', config.tamanioLetra);
 
     useEffect(() => {
         const obtenerFavoritos = async () => {
@@ -79,11 +87,11 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>⭐ Tus favoritos</Text>
+        <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
+        <Text style={[styles.title, { color: textColor, fontSize } ]}>⭐ Tus favoritos</Text>
 
         {favoritos.length === 0 ? (
-            <Text style={styles.empty}>No se guardado ningún dispositivo aún.</Text>
+            <Text style={[styles.empty, { color: textColor }]}>No se guardó ningún dispositivo aún.</Text>
         ) : (
             <>
             <Pressable style={styles.clearButton} onPress={vaciarFavoritos}>
@@ -91,17 +99,19 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
             </Pressable>
 
             {favoritos.map((item) => (
-                <View key={item.id} style={styles.card}>
+                <View key={item.id} style={[styles.card, { backgroundColor: cardBg }]}>
                 <Image source={getImage(item.id)} style={styles.image} />
-                <Text style={styles.name}>{item.nombre}</Text>
-                <Text style={styles.summary}>{item.resumen}</Text>
+                <Text style={[styles.name, { color: textColor, fontSize }]}>{item.nombre}</Text>
+                <Text style={[styles.summary, { color: config.modoOscuro ? '#ccc' : '#555', fontSize }]}>
+                    {item.resumen}
+                </Text>
 
                 <Pressable style={styles.button} onPress={() => verDetalle(item.nombre)}>
-                    <Text style={styles.buttonText}>Ver detalles</Text>
+                    <Text style={[styles.buttonText, { fontSize }]}>Ver detalles</Text>
                 </Pressable>
 
                 <Pressable style={styles.deleteButton} onPress={() => confirmarEliminar(item.id)}>
-                    <Text style={styles.deleteText}>Eliminar</Text>
+                    <Text style={[styles.deleteText, { fontSize }]}>Eliminar</Text>
                 </Pressable>
                 </View>
             ))}
@@ -112,13 +122,13 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
     }
 
     const styles = StyleSheet.create({
-    container: { padding: 20, backgroundColor: '#fff', alignItems: 'center' },
-    title: { fontSize: 24, fontWeight: 'bold', color: '#1e3a8a', marginBottom: 20 },
-    empty: { fontSize: 16, color: '#444', marginTop: 30, textAlign: 'center' },
-    card: { backgroundColor: '#f0f0f0', borderRadius: 10, padding: 15, marginBottom: 20, width: '100%', alignItems: 'center' },
+    container: { padding: 20, alignItems: 'center' },
+    title: { fontWeight: 'bold', marginBottom: 20 },
+    empty: { marginTop: 30, textAlign: 'center' },
+    card: { borderRadius: 10, padding: 15, marginBottom: 20, width: '100%', alignItems: 'center' },
     image: { width: 120, height: 120, resizeMode: 'contain', marginBottom: 10 },
-    name: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
-    summary: { fontSize: 14, color: '#555', textAlign: 'center', marginBottom: 10 },
+    name: { fontWeight: 'bold', marginBottom: 5 },
+    summary: { textAlign: 'center', marginBottom: 10 },
     button: { backgroundColor: '#2563eb', padding: 10, borderRadius: 8, marginBottom: 5, width: '80%' },
     buttonText: { color: '#fff', textAlign: 'center' },
     deleteButton: { backgroundColor: '#dc2626', padding: 8, borderRadius: 8, width: '80%' },

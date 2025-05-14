@@ -1,53 +1,35 @@
-    import AsyncStorage from '@react-native-async-storage/async-storage';
+    import { useAppSettings } from '@/hooks/useAppSettings';
+import { getFontSize } from '@/utils/getFontSize';
 import { Picker } from '@react-native-picker/picker';
-import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
-    type Config = {
-    modoOscuro: boolean;
-    tamanioLetra: 'pequeno' | 'normal' | 'grande';
-    lectorPantalla: boolean;
-    idioma: 'es' | 'en' | 'it' | 'de' | 'fr';
-    moneda: 'USD' | 'EUR';
-    };
-
     export default function Configuracion() {
-    const [config, setConfig] = useState<Config>({
-        modoOscuro: false,
-        tamanioLetra: 'normal',
-        lectorPantalla: false,
-        idioma: 'es',
-        moneda: 'USD',
-    });
+    const { settings, setSettings } = useAppSettings();
 
-    useEffect(() => {
-        const cargarConfig = async () => {
-        const json = await AsyncStorage.getItem('config');
-        if (json) setConfig(JSON.parse(json));
-        };
-        cargarConfig();
-    }, []);
-
-    const actualizarConfig = async (nueva: Partial<Config>) => {
-        const actualizada = { ...config, ...nueva };
-        setConfig(actualizada);
-        await AsyncStorage.setItem('config', JSON.stringify(actualizada));
+    const actualizar = (cambio: Partial<typeof settings>) => {
+        setSettings(cambio);
     };
+
+    const isDark = settings.modoOscuro;
+    const bgColor = isDark ? '#111' : '#fff';
+    const textColor = isDark ? '#eee' : '#1e3a8a';
+
+    const fontSize = getFontSize('medium', settings.tamanioLetra);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Configuración</Text>
+        <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
+        <Text style={[styles.title, { color: textColor }]}>Configuración</Text>
 
         <View style={styles.setting}>
-            <Text style={styles.label}>🌙 Modo oscuro</Text>
-            <Switch value={config.modoOscuro} onValueChange={(v) => actualizarConfig({ modoOscuro: v })} />
+            <Text style={[styles.label, { color: textColor }]}>🌙 Modo oscuro</Text>
+            <Switch value={settings.modoOscuro} onValueChange={(v) => actualizar({ modoOscuro: v })} />
         </View>
 
         <View style={styles.setting}>
-            <Text style={styles.label}>🔠 Tamaño de letra</Text>
+            <Text style={[styles.label, { color: textColor }]}>🔠 Tamaño de letra</Text>
             <Picker
-            selectedValue={config.tamanioLetra}
-            onValueChange={(value) => actualizarConfig({ tamanioLetra: value })}
+            selectedValue={settings.tamanioLetra}
+            onValueChange={(value) => actualizar({ tamanioLetra: value })}
             >
             <Picker.Item label="Pequeño" value="pequeno" />
             <Picker.Item label="Normal" value="normal" />
@@ -56,15 +38,15 @@ import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
         </View>
 
         <View style={styles.setting}>
-            <Text style={styles.label}>🧏‍♂️ Lector para ciegos</Text>
-            <Switch value={config.lectorPantalla} onValueChange={(v) => actualizarConfig({ lectorPantalla: v })} />
+            <Text style={[styles.label, { color: textColor }]}>🧏‍♂️ Lector para ciegos</Text>
+            <Switch value={settings.lectorPantalla} onValueChange={(v) => actualizar({ lectorPantalla: v })} />
         </View>
 
         <View style={styles.setting}>
-            <Text style={styles.label}>🌐 Idioma</Text>
+            <Text style={[styles.label, { color: textColor }]}>🌐 Idioma</Text>
             <Picker
-            selectedValue={config.idioma}
-            onValueChange={(value) => actualizarConfig({ idioma: value })}
+            selectedValue={settings.idioma}
+            onValueChange={(value) => actualizar({ idioma: value })}
             >
             <Picker.Item label="Español" value="es" />
             <Picker.Item label="Inglés" value="en" />
@@ -75,10 +57,10 @@ import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
         </View>
 
         <View style={styles.setting}>
-            <Text style={styles.label}>💱 Moneda</Text>
+            <Text style={[styles.label, { color: textColor }]}>💱 Moneda</Text>
             <Picker
-            selectedValue={config.moneda}
-            onValueChange={(value) => actualizarConfig({ moneda: value })}
+            selectedValue={settings.moneda}
+            onValueChange={(value) => actualizar({ moneda: value })}
             >
             <Picker.Item label="USD (Dólares)" value="USD" />
             <Picker.Item label="EUR (Euros)" value="EUR" />
@@ -89,8 +71,8 @@ import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
     }
 
     const styles = StyleSheet.create({
-    container: { padding: 20, backgroundColor: '#fff' },
-    title: { fontSize: 24, fontWeight: 'bold', color: '#1e3a8a', marginBottom: 20, textAlign: 'center' },
+    container: { padding: 20 },
+    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
     setting: { marginBottom: 25 },
-    label: { fontSize: 16, color: '#333', marginBottom: 5 },
+    label: { fontSize: 16, marginBottom: 5 },
     });
