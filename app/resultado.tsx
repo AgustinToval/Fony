@@ -35,6 +35,16 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const bodyFont = getFontSize('small', settings.tamanioLetra);
 
+    // 🧮 Convertir precio según moneda
+    const convertirPrecio = (precioUSD: number) => {
+        if (settings.moneda === 'EUR') {
+        return Math.round(precioUSD * 0.92); // Aproximación
+        }
+        return precioUSD;
+    };
+
+    const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
+
     if (!modelo) {
         return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
@@ -78,7 +88,7 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
 
         <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>Especificaciones:</Text>
         <Text style={[styles.spec, { color: specColor }]}>Marca: {modelo.marca}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>Precio: US${modelo.precio}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>Precio: {simbolo}{convertirPrecio(modelo.precio)}</Text>
         <Text style={[styles.spec, { color: specColor }]}>Colores: {modelo.color.join(', ')}</Text>
         <Text style={[styles.spec, { color: specColor }]}>Tamaño: {modelo.tamano}</Text>
         <Text style={[styles.spec, { color: specColor }]}>Uso ideal: {modelo.usoIdeal.join(', ')}</Text>

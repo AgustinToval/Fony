@@ -11,13 +11,13 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     const { setPreferencias, preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
 
+    const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
+    const tasa = settings.moneda === 'EUR' ? 0.93 : 1;
     const [monto, setMonto] = useState(500);
 
     const continuar = () => {
-        setPreferencias({
-        ...preferencias,
-        presupuesto: monto,
-        });
+        const valorUSD = Math.round(monto / tasa);
+        setPreferencias({ ...preferencias, presupuesto: valorUSD });
         router.push('/preferencias');
     };
 
@@ -34,7 +34,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
         {Platform.OS !== 'web' ? (
             <>
             <Text style={[styles.amount, { fontSize: getFontSize('medium', settings.tamanioLetra), color: '#2563eb' }]}>
-                €{monto}
+                {simbolo}{monto}
             </Text>
             <Slider
                 value={monto}
@@ -62,32 +62,10 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     }
 
     const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 30,
-        justifyContent: 'center',
-    },
-    title: {
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    amount: {
-        textAlign: 'center',
-        marginBottom: 10,
-    },
-    button: {
-        backgroundColor: '#2563eb',
-        padding: 15,
-        borderRadius: 10,
-        marginTop: 30,
-    },
-    buttonText: {
-        color: '#fff',
-        textAlign: 'center',
-    },
-    warning: {
-        textAlign: 'center',
-        marginVertical: 20,
-    },
+    container: { flex: 1, padding: 30, justifyContent: 'center' },
+    title: { fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+    amount: { textAlign: 'center', marginBottom: 10 },
+    button: { backgroundColor: '#2563eb', padding: 15, borderRadius: 10, marginTop: 30 },
+    buttonText: { color: '#fff', textAlign: 'center' },
+    warning: { textAlign: 'center', marginVertical: 20 },
     });

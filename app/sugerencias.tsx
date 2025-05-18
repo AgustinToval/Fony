@@ -54,10 +54,17 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
         let resultados = celulares.filter((cel) => {
         const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-        const coincideUso = cel.usoIdeal.includes(preferencias.uso);
-        const coincideMarca = preferencias.marcaPreferida === 'ninguna' || cel.marca === preferencias.marcaPreferida;
-        const coincideColor = preferencias.colorPreferido === 'ninguno' || cel.color.includes(preferencias.colorPreferido!);
-        const coincideTamano = preferencias.tamanoPreferido === 'ninguno' || cel.tamano === preferencias.tamanoPreferido;
+        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(preferencias.uso.toLowerCase());
+        const coincideMarca =
+            preferencias.marcaPreferida === 'ninguna' ||
+            cel.marca.toLowerCase() === (preferencias.marcaPreferida?.toLowerCase() ?? '');
+        const coincideColor =
+            preferencias.colorPreferido === 'ninguno' ||
+            cel.color.map((c) => c.toLowerCase()).includes(preferencias.colorPreferido?.toLowerCase() ?? '');
+        const coincideTamano =
+            preferencias.tamanoPreferido === 'ninguno' ||
+            cel.tamano.toLowerCase() === (preferencias.tamanoPreferido?.toLowerCase() ?? '');
+
         return coincidePresupuesto && coincideUso && coincideMarca && coincideColor && coincideTamano;
         });
 
@@ -70,7 +77,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
         resultados = celulares.filter((cel) => {
         const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-        const coincideUso = cel.usoIdeal.includes(preferencias.uso);
+        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(preferencias.uso.toLowerCase());
         return coincidePresupuesto && coincideUso;
         });
 
@@ -125,51 +132,14 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     }
 
     const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-    },
-    title: {
-        fontWeight: 'bold',
-        marginBottom: 5,
-        textAlign: 'center',
-    },
-    subtitle: {
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    warning: {
-        textAlign: 'center',
-        color: '#e11d48',
-        marginBottom: 15,
-    },
-    card: {
-        borderRadius: 10,
-        padding: 15,
-        marginBottom: 20,
-        alignItems: 'center',
-    },
-    image: {
-        width: 150,
-        height: 150,
-        resizeMode: 'contain',
-        marginBottom: 10,
-    },
-    name: {
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    summary: {
-        textAlign: 'center',
-        marginBottom: 10,
-    },
-    button: {
-        backgroundColor: '#2563eb',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 14,
-    },
+    container: { padding: 20 },
+    title: { fontWeight: 'bold', marginBottom: 5, textAlign: 'center' },
+    subtitle: { marginBottom: 20, textAlign: 'center' },
+    warning: { textAlign: 'center', color: '#e11d48', marginBottom: 15 },
+    card: { borderRadius: 10, padding: 15, marginBottom: 20, alignItems: 'center' },
+    image: { width: 150, height: 150, resizeMode: 'contain', marginBottom: 10 },
+    name: { fontWeight: 'bold', marginBottom: 5 },
+    summary: { textAlign: 'center', marginBottom: 10 },
+    button: { backgroundColor: '#2563eb', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 },
+    buttonText: { color: '#fff', fontSize: 14 },
     });
