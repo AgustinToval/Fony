@@ -2,21 +2,10 @@
 import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { getImage } from '@/utils/getImage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-
-    const getImage = (filename: string) => {
-    switch (filename) {
-        case 's23': return require('@/assets/images/s23.png');
-        case 'iphone13': return require('@/assets/images/iphone13.png');
-        case 'motoe32': return require('@/assets/images/motoe32.png');
-        case 'redminote12': return require('@/assets/images/redminote12.png');
-        case 'a14': return require('@/assets/images/a14.png');
-        case 'xiaomi13': return require('@/assets/images/xiaomi13.png');
-        default: return require('@/assets/images/default.png');
-    }
-    };
 
     type Celular = {
     id: string;
@@ -27,7 +16,9 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     color: string[];
     tamano: string;
     resumen: string;
+    idImagen?: string;
     linksCompra?: { [key: string]: string };
+    etiquetas?: { [key: string]: number }; // ya sin posibilidad de `undefined`
     };
 
     export default function Sugerencias() {
@@ -49,18 +40,41 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const smallFont = getFontSize('small', settings.tamanioLetra);
 
+    const normalizarUso = (u: string) =>
+        ['multimedia', 'fotografia', 'video'].includes(u.toLowerCase()) ? 'multimedia' :
+        ['gaming', 'juegos'].includes(u.toLowerCase()) ? 'gaming' :
+        ['trabajo', 'oficina', 'productividad'].includes(u.toLowerCase()) ? 'trabajo' :
+        ['redes', 'sociales'].includes(u.toLowerCase()) ? 'redes' :
+        ['otro', 'general'].includes(u.toLowerCase()) ? 'otro' :
+        u.toLowerCase();
+
+    const calcularPuntaje = (cel: Celular): number => {
+        if (!preferencias.sliders || !cel.etiquetas) return 0;
+
+        return Object.entries(preferencias.sliders).reduce((total, [subuso, importancia]) => {
+        const valor = cel.etiquetas?.[subuso] ?? 0;
+        return total + (valor * importancia);
+        }, 0);
+    };
+
     useEffect(() => {
-        const celulares = celularesData as Celular[];
+        console.log('📦 Preferencias del usuario:', preferencias);
+
+        const usoPreferido = normalizarUso(preferencias.uso || '');
+        const celulares: Celular[] = celularesData as unknown as Celular[];
 
         let resultados = celulares.filter((cel) => {
         const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(preferencias.uso.toLowerCase());
+        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
         const coincideMarca =
             preferencias.marcaPreferida === 'ninguna' ||
             cel.marca.toLowerCase() === (preferencias.marcaPreferida?.toLowerCase() ?? '');
         const coincideColor =
             preferencias.colorPreferido === 'ninguno' ||
-            cel.color.map((c) => c.toLowerCase()).includes(preferencias.colorPreferido?.toLowerCase() ?? '');
+            cel.color.some((c) =>
+            c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '') ===
+            preferencias.colorPreferido?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '')
+            );
         const coincideTamano =
             preferencias.tamanoPreferido === 'ninguno' ||
             cel.tamano.toLowerCase() === (preferencias.tamanoPreferido?.toLowerCase() ?? '');
@@ -69,22 +83,30 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
         });
 
         if (resultados.length > 0) {
+        const conPuntaje = resultados
+            .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
+            .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
+
         setUsoFiltroFlexible(false);
         setSinCoincidencias(false);
-        setSugeridos(resultados.slice(0, 3));
+        setSugeridos(conPuntaje.slice(0, 3));
         return;
         }
 
         resultados = celulares.filter((cel) => {
         const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(preferencias.uso.toLowerCase());
+        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
         return coincidePresupuesto && coincideUso;
         });
 
         if (resultados.length > 0) {
+        const conPuntaje = resultados
+            .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
+            .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
+
         setUsoFiltroFlexible(true);
         setSinCoincidencias(false);
-        setSugeridos(resultados.slice(0, 3));
+        setSugeridos(conPuntaje.slice(0, 3));
         return;
         }
 

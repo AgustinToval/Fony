@@ -2,21 +2,10 @@
 import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { getImage } from '@/utils/getImage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-
-    const getImage = (filename: string) => {
-    switch (filename) {
-        case 's23': return require('@/assets/images/s23.png');
-        case 'iphone13': return require('@/assets/images/iphone13.png');
-        case 'motoe32': return require('@/assets/images/motoe32.png');
-        case 'redminote12': return require('@/assets/images/redminote12.png');
-        case 'a14': return require('@/assets/images/a14.png');
-        case 'xiaomi13': return require('@/assets/images/xiaomi13.png');
-        default: return require('@/assets/images/default.png');
-    }
-    };
 
     export default function Resultado() {
     const { preferencias } = useUserPreferences();
@@ -35,12 +24,10 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const bodyFont = getFontSize('small', settings.tamanioLetra);
 
-    // 🧮 Convertir precio según moneda
     const convertirPrecio = (precioUSD: number) => {
-        if (settings.moneda === 'EUR') {
-        return Math.round(precioUSD * 0.92); // Aproximación
-        }
-        return precioUSD;
+        return settings.moneda === 'EUR'
+        ? Math.round(precioUSD * 0.92)
+        : precioUSD;
     };
 
     const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
@@ -48,7 +35,9 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
     if (!modelo) {
         return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
-            <Text style={[styles.title, { color: textColor }]}>No se encontró información del dispositivo seleccionado.</Text>
+            <Text style={[styles.title, { color: textColor }]}>
+            No se encontró información del dispositivo seleccionado.
+            </Text>
         </View>
         );
     }
