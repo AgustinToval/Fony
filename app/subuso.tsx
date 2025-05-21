@@ -1,6 +1,7 @@
     import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import Slider from '@react-native-community/slider';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -11,6 +12,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     const router = useRouter();
     const { setPreferencias } = useUserPreferences();
     const { settings } = useAppSettings();
+    const lang = settings.idioma;
 
     const isDark = settings.modoOscuro;
     const bgColor = isDark ? '#111' : '#fff';
@@ -37,29 +39,29 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
     const slidersPorUso: Record<string, { label: string; key: string }[]> = {
         juegos: [
-        { label: 'Gráficos avanzados', key: 'graficos' },
-        { label: 'Juegos casuales', key: 'casuales' },
-        { label: 'Velocidad y respuesta', key: 'rendimiento' },
+        { label: t('subuso.graficos', lang), key: 'graficos' },
+        { label: t('subuso.casuales', lang), key: 'casuales' },
+        { label: t('subuso.rendimiento', lang), key: 'rendimiento' },
         ],
         multimedia: [
-        { label: 'Calidad de la cámara', key: 'camara' },
-        { label: 'Video y grabación', key: 'video' },
-        { label: 'Edición de fotos', key: 'edicion' },
+        { label: t('subuso.camara', lang), key: 'camara' },
+        { label: t('subuso.video', lang), key: 'video' },
+        { label: t('subuso.edicion', lang), key: 'edicion' },
         ],
         trabajo: [
-        { label: 'Aplicaciones de oficina', key: 'oficina' },
-        { label: 'Multitarea', key: 'multitarea' },
-        { label: 'Seguridad', key: 'seguridad' },
+        { label: t('subuso.oficina', lang), key: 'oficina' },
+        { label: t('subuso.multitarea', lang), key: 'multitarea' },
+        { label: t('subuso.seguridad', lang), key: 'seguridad' },
         ],
         redes: [
-        { label: 'Fluidez en apps sociales', key: 'fluidez' },
-        { label: 'Carga de imágenes y videos', key: 'carga' },
-        { label: 'Notificaciones y multitarea', key: 'notificaciones' },
+        { label: t('subuso.fluidez', lang), key: 'fluidez' },
+        { label: t('subuso.carga', lang), key: 'carga' },
+        { label: t('subuso.notificaciones', lang), key: 'notificaciones' },
         ],
         otro: [
-        { label: 'Duración de batería', key: 'bateria' },
-        { label: 'Facilidad de uso', key: 'facilidad' },
-        { label: 'Almacenamiento', key: 'almacenamiento' },
+        { label: t('subuso.bateria', lang), key: 'bateria' },
+        { label: t('subuso.facilidad', lang), key: 'facilidad' },
+        { label: t('subuso.almacenamiento', lang), key: 'almacenamiento' },
         ],
     };
 
@@ -68,7 +70,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
         <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
-            Indica la importancia para este uso:
+            {t('subuso.titulo', lang)}
         </Text>
 
         {sliders.map((item) => (
@@ -85,13 +87,15 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
                 maximumTrackTintColor="#ccc"
                 />
             ) : (
-                <Text style={[styles.label, { color: labelColor }]}>[Control no disponible en versión web]</Text>
+                <Text style={[styles.label, { color: labelColor }]}>
+                {t('subuso.controlWeb', lang)}
+                </Text>
             )}
             </View>
         ))}
 
         <Pressable style={styles.button} onPress={continuar}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>Continuar</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>{t('subuso.continuar', lang)}</Text>
         </Pressable>
         </View>
     );

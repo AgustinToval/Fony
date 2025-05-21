@@ -1,6 +1,7 @@
     import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import Slider from '@react-native-community/slider';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -28,7 +29,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
         <Text style={[styles.title, { fontSize: getFontSize('large', settings.tamanioLetra), color: textColor }]}>
-            ¿Cuál es tu presupuesto estimado?
+            {t('disponibilidad.pregunta', settings.idioma)}
         </Text>
 
         {Platform.OS !== 'web' ? (
@@ -48,13 +49,13 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
             </>
         ) : (
             <Text style={[styles.warning, { fontSize: getFontSize('small', settings.tamanioLetra), color: '#888' }]}>
-            [Control no disponible en la versión web]
+            {t('disponibilidad.controlWeb', settings.idioma)}
             </Text>
         )}
 
         <Pressable style={styles.button} onPress={continuar}>
             <Text style={[styles.buttonText, { fontSize: getFontSize('medium', settings.tamanioLetra) }]}>
-            Continuar
+            {t('disponibilidad.continuar', settings.idioma)}
             </Text>
         </Pressable>
         </View>

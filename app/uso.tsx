@@ -1,18 +1,20 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Uso() {
     const router = useRouter();
     const { settings } = useAppSettings();
+    const lang = settings.idioma;
 
     const usos = [
-        { label: 'Redes sociales', value: 'redes' },
-        { label: 'Fotos y videos', value: 'multimedia' },
-        { label: 'Juegos', value: 'juegos' },
-        { label: 'Trabajo / productividad', value: 'trabajo' },
-        { label: 'Otro uso general', value: 'otro' },
+        { label: t('uso.redes', lang), value: 'redes' },
+        { label: t('uso.multimedia', lang), value: 'multimedia' },
+        { label: t('uso.juegos', lang), value: 'juegos' },
+        { label: t('uso.trabajo', lang), value: 'trabajo' },
+        { label: t('uso.otro', lang), value: 'otro' },
     ];
 
     const seleccionarUso = (tipo: string) => {
@@ -29,14 +31,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
         <Text style={[styles.title, { fontSize: titleFont, color: textColor }]}>
-            ¿Qué uso principal le darás a tu nuevo celular?
+            {t('uso.titulo', lang)}
         </Text>
         {usos.map((uso) => (
-            <Pressable
-            key={uso.value}
-            style={styles.button}
-            onPress={() => seleccionarUso(uso.value)}
-            >
+            <Pressable key={uso.value} style={styles.button} onPress={() => seleccionarUso(uso.value)}>
             <Text style={[styles.buttonText, { fontSize: buttonFont }]}>{uso.label}</Text>
             </Pressable>
         ))}

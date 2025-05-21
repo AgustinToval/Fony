@@ -1,6 +1,7 @@
     import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -16,6 +17,7 @@ import {
     const router = useRouter();
     const { setPreferencias, preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
+    const lang = settings.idioma;
 
     const [marcaDeseada, setMarcaDeseada] = useState('ninguna');
     const [colorDeseado, setColorDeseado] = useState('ninguno');
@@ -53,19 +55,19 @@ import {
         { label: 'Motorola', value: 'Motorola' },
         { label: 'Apple', value: 'Apple' },
         { label: 'Xiaomi', value: 'Xiaomi' },
-        { label: 'Otra', value: 'otra' },
+        { label: t('preferencias.otra', lang), value: 'otra' },
         ],
         color: [
-        { label: 'Negro', value: 'Negro' },
-        { label: 'Blanco', value: 'Blanco' },
-        { label: 'Plateado', value: 'Plateado' },
-        { label: 'Dorado', value: 'Dorado' },
-        { label: 'Otro', value: 'otro' },
+        { label: t('preferencias.negro', lang), value: 'Negro' },
+        { label: t('preferencias.blanco', lang), value: 'Blanco' },
+        { label: t('preferencias.plateado', lang), value: 'Plateado' },
+        { label: t('preferencias.dorado', lang), value: 'Dorado' },
+        { label: t('preferencias.otro', lang), value: 'otro' },
         ],
         tamano: [
-        { label: 'Pequeño (menos de 6”)', value: 'pequeno' },
-        { label: 'Mediano (6 a 6.5”)', value: 'mediano' },
-        { label: 'Grande (más de 6.5”)', value: 'grande' },
+        { label: t('preferencias.pequeno', lang), value: 'pequeno' },
+        { label: t('preferencias.mediano', lang), value: 'mediano' },
+        { label: t('preferencias.grande', lang), value: 'grande' },
         ],
     };
 
@@ -90,7 +92,7 @@ import {
                 </Pressable>
             ))}
             <Pressable onPress={() => setModal(null)} style={styles.modalCancel}>
-                <Text style={{ color: '#dc2626' }}>Cancelar</Text>
+                <Text style={{ color: '#dc2626' }}>{t('configuracion.cancelar', lang)}</Text>
             </Pressable>
             </View>
         </View>
@@ -100,13 +102,15 @@ import {
     return (
         <ScrollView style={{ backgroundColor: bgColor }} contentContainerStyle={styles.container}>
         {/* Marca */}
-        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>¿Prefieres una marca específica?</Text>
+        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
+            {t('preferencias.pregMarca', lang)}
+        </Text>
         <View style={styles.selector}>
             <Pressable onPress={() => setUsarMarca(true)} style={usarMarca ? styles.selected : styles.option}>
-            <Text style={{ color: usarMarca ? '#fff' : labelColor }}>Sí</Text>
+            <Text style={{ color: usarMarca ? '#fff' : labelColor }}>{t('preferencias.si', lang)}</Text>
             </Pressable>
             <Pressable onPress={() => setUsarMarca(false)} style={!usarMarca ? styles.selected : styles.option}>
-            <Text style={{ color: !usarMarca ? '#fff' : labelColor }}>No</Text>
+            <Text style={{ color: !usarMarca ? '#fff' : labelColor }}>{t('preferencias.no', lang)}</Text>
             </Pressable>
         </View>
         {usarMarca && (
@@ -119,13 +123,15 @@ import {
         )}
 
         {/* Color */}
-        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>¿Prefieres un color específico?</Text>
+        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
+            {t('preferencias.pregColor', lang)}
+        </Text>
         <View style={styles.selector}>
             <Pressable onPress={() => setUsarColor(true)} style={usarColor ? styles.selected : styles.option}>
-            <Text style={{ color: usarColor ? '#fff' : labelColor }}>Sí</Text>
+            <Text style={{ color: usarColor ? '#fff' : labelColor }}>{t('preferencias.si', lang)}</Text>
             </Pressable>
             <Pressable onPress={() => setUsarColor(false)} style={!usarColor ? styles.selected : styles.option}>
-            <Text style={{ color: !usarColor ? '#fff' : labelColor }}>No</Text>
+            <Text style={{ color: !usarColor ? '#fff' : labelColor }}>{t('preferencias.no', lang)}</Text>
             </Pressable>
         </View>
         {usarColor && (
@@ -138,13 +144,15 @@ import {
         )}
 
         {/* Tamaño */}
-        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>¿Prefieres un tamaño específico?</Text>
+        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
+            {t('preferencias.pregTamano', lang)}
+        </Text>
         <View style={styles.selector}>
             <Pressable onPress={() => setUsarTamano(true)} style={usarTamano ? styles.selected : styles.option}>
-            <Text style={{ color: usarTamano ? '#fff' : labelColor }}>Sí</Text>
+            <Text style={{ color: usarTamano ? '#fff' : labelColor }}>{t('preferencias.si', lang)}</Text>
             </Pressable>
             <Pressable onPress={() => setUsarTamano(false)} style={!usarTamano ? styles.selected : styles.option}>
-            <Text style={{ color: !usarTamano ? '#fff' : labelColor }}>No</Text>
+            <Text style={{ color: !usarTamano ? '#fff' : labelColor }}>{t('preferencias.no', lang)}</Text>
             </Pressable>
         </View>
         {usarTamano && (
@@ -158,7 +166,7 @@ import {
 
         {/* Botón */}
         <Pressable style={styles.button} onPress={continuar}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>Ver resultado</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>{t('preferencias.verResultado', lang)}</Text>
         </Pressable>
         </ScrollView>
     );

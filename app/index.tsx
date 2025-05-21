@@ -1,16 +1,20 @@
+import { useAppSettings } from '@/hooks/useAppSettings';
+import { t } from '@/utils/i18n';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export default function () {
+export default function Index() {
   const router = useRouter();
+  const { settings } = useAppSettings();
+  const lang = settings.idioma;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>FONY</Text>
-      <Text style={styles.subtitle}>Tu guía para encontrar el celular ideal</Text>
+      <Text style={styles.title}>{t('index.titulo', lang)}</Text>
+      <Text style={styles.subtitle}>{t('index.subtitulo', lang)}</Text>
 
-      <Pressable style={styles.button} onPress={() => router.push({ pathname: '/perfil' as any })}>
-        <Text style={styles.buttonText}>Comenzar</Text>
+      <Pressable style={styles.button} onPress={() => router.push('/perfil')}>
+        <Text style={styles.buttonText}>{t('index.boton', lang)}</Text>
       </Pressable>
     </View>
   );

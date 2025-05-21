@@ -1,5 +1,6 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -9,7 +10,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     const router = useRouter();
     const { settings } = useAppSettings();
     const { colors, dark } = useTheme();
-console.log('🔍 TEMA ACTUAL:', dark ? 'Dark' : 'Light');
 
     const titleFont = getFontSize('large', settings.tamanioLetra);
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
@@ -22,22 +22,28 @@ console.log('🔍 TEMA ACTUAL:', dark ? 'Dark' : 'Light');
         </Pressable>
 
         <Text style={[styles.title, { fontSize: titleFont, color: colors.text }]}>
-            ¡Bienvenido a Fony!
+            {t('home.bienvenida', settings.idioma)}
         </Text>
         <Text style={[styles.subtitle, { fontSize: subtitleFont, color: colors.text }]}>
-            ¿Qué quieres hacer hoy?
+            {t('home.pregunta', settings.idioma)}
         </Text>
 
         <Pressable style={styles.button} onPress={() => router.push('/perfil')}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>📱 Buscar mi próximo celular</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
+            📱 {t('home.buscar', settings.idioma)}
+            </Text>
         </Pressable>
 
         <Pressable style={styles.button} onPress={() => router.push('/favoritos')}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>⭐ Ver favoritos</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
+            ⭐ {t('home.favoritos', settings.idioma)}
+            </Text>
         </Pressable>
 
         <Pressable style={styles.button} onPress={() => router.push('/sugerencias')}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>🛒 Últimas sugerencias</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
+            🛒 {t('home.sugerencias', settings.idioma)}
+            </Text>
         </Pressable>
         </View>
     );

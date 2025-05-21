@@ -1,16 +1,18 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Perfil() {
     const router = useRouter();
     const { settings } = useAppSettings();
+    const lang = settings.idioma;
 
     const perfiles = [
-        { label: 'Adulto mayor / sin experiencia', value: 'mayor' },
-        { label: 'Adulto con conocimientos básicos', value: 'basico' },
-        { label: 'Usuario con experiencia', value: 'experto' },
+        { label: t('perfil.mayor', lang), value: 'mayor' },
+        { label: t('perfil.basico', lang), value: 'basico' },
+        { label: t('perfil.experto', lang), value: 'experto' },
     ];
 
     const seleccionarPerfil = (tipo: string) => {
@@ -27,7 +29,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
         <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
-            ¿Quién está usando Fony?
+            {t('perfil.titulo', lang)}
         </Text>
 
         {perfiles.map((perfil) => (

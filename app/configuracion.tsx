@@ -1,5 +1,6 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
+import { t } from '@/utils/i18n';
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
@@ -20,16 +21,13 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
 
     const opciones = {
         tamanio: [
-        { label: 'Pequeño', value: 'pequeno' },
-        { label: 'Normal', value: 'normal' },
-        { label: 'Grande', value: 'grande' },
+        { label: t('configuracion.tamanio.pequeno', settings.idioma), value: 'pequeno' },
+        { label: t('configuracion.tamanio.normal', settings.idioma), value: 'normal' },
+        { label: t('configuracion.tamanio.grande', settings.idioma), value: 'grande' },
         ],
         idioma: [
         { label: 'Español', value: 'es' },
-        { label: 'Inglés', value: 'en' },
-        { label: 'Italiano', value: 'it' },
-        { label: 'Alemán', value: 'de' },
-        { label: 'Francés', value: 'fr' },
+        { label: 'English', value: 'en' },
         ],
         moneda: [
         { label: 'USD (Dólares)', value: 'USD' },
@@ -60,7 +58,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
                 </Pressable>
             ))}
             <Pressable onPress={() => setModal(null)} style={styles.modalCancel}>
-                <Text style={{ color: '#dc2626' }}>Cancelar</Text>
+                <Text style={{ color: '#dc2626' }}>{t('configuracion.cancelar', settings.idioma)}</Text>
             </Pressable>
             </View>
         </View>
@@ -70,12 +68,14 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
         <Text style={[styles.title, { color: textColor, fontSize: getFontSize('large', settings.tamanioLetra) }]}>
-            Configuración
+            {t('configuracion.titulo', settings.idioma)}
         </Text>
 
         {/* Modo oscuro */}
         <View style={styles.setting}>
-            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>🌙 Modo oscuro</Text>
+            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>
+            {t('configuracion.modoOscuro', settings.idioma)}
+            </Text>
             <Switch
             value={settings.modoOscuro}
             onValueChange={(v) => setSettings({ modoOscuro: v })}
@@ -86,7 +86,9 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
 
         {/* Tamaño de letra */}
         <View style={styles.setting}>
-            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>🔠 Tamaño de letra</Text>
+            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>
+            {t('configuracion.tamanoLetra', settings.idioma)}
+            </Text>
             <Pressable
             style={[styles.selector, { backgroundColor: isDark ? '#222' : '#f0f0f0' }]}
             onPress={() => setModal('tamanio')}
@@ -101,7 +103,9 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
 
         {/* Lector para ciegos */}
         <View style={styles.setting}>
-            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>🧏‍♂️ Lector para ciegos</Text>
+            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>
+            {t('configuracion.lector', settings.idioma)}
+            </Text>
             <Switch
             value={settings.lectorPantalla}
             onValueChange={(v) => setSettings({ lectorPantalla: v })}
@@ -112,7 +116,9 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
 
         {/* Idioma */}
         <View style={styles.setting}>
-            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>🌐 Idioma</Text>
+            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>
+            {t('configuracion.idioma', settings.idioma)}
+            </Text>
             <Pressable
             style={[styles.selector, { backgroundColor: isDark ? '#222' : '#f0f0f0' }]}
             onPress={() => setModal('idioma')}
@@ -127,7 +133,9 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
 
         {/* Moneda */}
         <View style={styles.setting}>
-            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>💱 Moneda</Text>
+            <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>
+            {t('configuracion.moneda', settings.idioma)}
+            </Text>
             <Pressable
             style={[styles.selector, { backgroundColor: isDark ? '#222' : '#f0f0f0' }]}
             onPress={() => setModal('moneda')}

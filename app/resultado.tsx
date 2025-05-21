@@ -3,6 +3,7 @@ import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
+import { t } from '@/utils/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -10,6 +11,7 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
     export default function Resultado() {
     const { preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
+    const lang = settings.idioma;
     const router = useRouter();
 
     const modelo = celularesData.find((cel) => cel.nombre === preferencias.movilElegido);
@@ -36,7 +38,7 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
         return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>
             <Text style={[styles.title, { color: textColor }]}>
-            No se encontró información del dispositivo seleccionado.
+            {t('resultado.noEncontrado', lang)}
             </Text>
         </View>
         );
@@ -51,13 +53,13 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
         if (!yaExiste) {
             favoritos.push(modelo);
             await AsyncStorage.setItem('favoritos', JSON.stringify(favoritos));
-            Alert.alert('Agregado a favoritos');
+            Alert.alert(t('resultado.agregado', lang));
         } else {
-            Alert.alert('Ya está en favoritos');
+            Alert.alert(t('resultado.yaExiste', lang));
         }
         } catch (error) {
         console.error('Error al guardar en favoritos:', error);
-        Alert.alert('Error al guardar el favorito');
+        Alert.alert(t('resultado.error', lang));
         }
     };
 
@@ -67,27 +69,31 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
         <Image source={getImage(modelo.id)} style={styles.image} />
         <Text style={[styles.summary, { fontSize: bodyFont, color: secondaryText }]}>{modelo.resumen}</Text>
 
-        <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>Enlaces para comprar:</Text>
+        <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>
+            {t('resultado.enlaces', lang)}
+        </Text>
         {modelo.linksCompra &&
             Object.entries(modelo.linksCompra).map(([tienda, url]) => (
             <Pressable key={tienda} style={styles.button} onPress={() => Linking.openURL(url)}>
-                <Text style={[styles.buttonText, { fontSize: bodyFont }]}>Ver en {tienda}</Text>
+                <Text style={[styles.buttonText, { fontSize: bodyFont }]}>{t('resultado.verEn', lang)} {tienda}</Text>
             </Pressable>
             ))}
 
-        <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>Especificaciones:</Text>
-        <Text style={[styles.spec, { color: specColor }]}>Marca: {modelo.marca}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>Precio: {simbolo}{convertirPrecio(modelo.precio)}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>Colores: {modelo.color.join(', ')}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>Tamaño: {modelo.tamano}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>Uso ideal: {modelo.usoIdeal.join(', ')}</Text>
+        <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>
+            {t('resultado.especificaciones', lang)}
+        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.marca', lang)}: {modelo.marca}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.precio', lang)}: {simbolo}{convertirPrecio(modelo.precio)}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.colores', lang)}: {modelo.color.join(', ')}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.tamano', lang)}: {modelo.tamano}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.usoIdeal', lang)}: {modelo.usoIdeal.join(', ')}</Text>
 
         <Pressable style={styles.favButton} onPress={guardarFavorito}>
-            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>Guardar en favoritos</Text>
+            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>{t('resultado.favorito', lang)}</Text>
         </Pressable>
 
         <Pressable style={styles.backButton} onPress={() => router.replace('/home')}>
-            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>Volver al inicio</Text>
+            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>{t('resultado.volver', lang)}</Text>
         </Pressable>
         </ScrollView>
     );
