@@ -1,8 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+    import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-    type AppSettings = {
-    idioma: 'es' | 'en' | 'it' | 'de' | 'fr';
+    // ✅ Definimos el tipo directamente aquí
+    export type AppSettings = {
+    idioma: 'es' | 'en';
     moneda: 'USD' | 'EUR';
     tamanioLetra: 'pequeno' | 'normal' | 'grande';
     modoOscuro: boolean;
@@ -51,6 +52,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
     );
     };
 
+    export const useAppSettings = () => useContext(AppSettingsContext);
     export { AppSettingsContext };
 
-export const useAppSettings = () => useContext(AppSettingsContext);

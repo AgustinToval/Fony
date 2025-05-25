@@ -3,9 +3,10 @@ import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
 import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
     export default function Favoritos() {
@@ -34,6 +35,15 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
 
         obtenerFavoritos();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            const mensaje = `${t('favoritos.lector.titulo', lang)}. ${t('favoritos.lector.bienvenida', lang)}`;
+            speak(mensaje, settings);
+        }
+        }, [settings])
+    );
 
     const verDetalle = (nombre: string) => {
         setPreferencias({ ...preferencias, movilElegido: nombre });

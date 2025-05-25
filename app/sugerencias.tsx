@@ -1,11 +1,14 @@
-    import celularesData from '@/assets/data/celulares.json';
+import celularesData from '@/assets/data/celulares.json';
 import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+
 
     type Celular = {
     id: string;
@@ -18,13 +21,14 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     resumen: string;
     idImagen?: string;
     linksCompra?: { [key: string]: string };
-    etiquetas?: { [key: string]: number }; // ya sin posibilidad de `undefined`
+    etiquetas?: { [key: string]: number };
     };
 
     export default function Sugerencias() {
     const router = useRouter();
     const { setPreferencias, preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
+    const lang = settings.idioma;
 
     const [sugeridos, setSugeridos] = useState<Celular[]>([]);
     const [usoFiltroFlexible, setUsoFiltroFlexible] = useState(false);
@@ -40,6 +44,17 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const smallFont = getFontSize('small', settings.tamanioLetra);
 
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            speak(
+            `${t('sugerencias.titulo', lang)}. ${t('sugerencias.subtitulo', lang)}`,
+            settings
+            );
+        }
+        }, [settings.lectorPantalla, lang])
+    );
+
     const normalizarUso = (u: string) =>
         ['multimedia', 'fotografia', 'video'].includes(u.toLowerCase()) ? 'multimedia' :
         ['gaming', 'juegos'].includes(u.toLowerCase()) ? 'gaming' :
@@ -50,7 +65,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
     const calcularPuntaje = (cel: Celular): number => {
         if (!preferencias.sliders || !cel.etiquetas) return 0;
-
         return Object.entries(preferencias.sliders).reduce((total, [subuso, importancia]) => {
         const valor = cel.etiquetas?.[subuso] ?? 0;
         return total + (valor * importancia);
@@ -58,8 +72,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     };
 
     useEffect(() => {
-        console.log('📦 Preferencias del usuario:', preferencias);
-
         const usoPreferido = normalizarUso(preferencias.uso || '');
         const celulares: Celular[] = celularesData as unknown as Celular[];
 
@@ -86,7 +98,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
         const conPuntaje = resultados
             .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
             .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
-
         setUsoFiltroFlexible(false);
         setSinCoincidencias(false);
         setSugeridos(conPuntaje.slice(0, 3));
@@ -103,7 +114,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
         const conPuntaje = resultados
             .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
             .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
-
         setUsoFiltroFlexible(true);
         setSinCoincidencias(false);
         setSugeridos(conPuntaje.slice(0, 3));
@@ -122,30 +132,36 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
-        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>Sugerencias personalizadas</Text>
+        <Text style={[styles.title, { color: textColor, fontSize: titleFont }]}>
+            {t('sugerencias.titulo', lang)}
+        </Text>
         <Text style={[styles.subtitle, { color: subTextColor, fontSize: subtitleFont }]}>
-            Estos móviles se adaptan a tus necesidades:
+            {t('sugerencias.subtitulo', lang)}
         </Text>
 
         {usoFiltroFlexible && !sinCoincidencias && (
             <Text style={[styles.warning, { fontSize: smallFont }]}>
-            * Mostrando resultados aproximados debido a falta de coincidencias exactas con tus preferencias.
+            {t('sugerencias.filtroFlexible', lang)}
             </Text>
         )}
 
         {sinCoincidencias && (
             <Text style={[styles.warning, { fontSize: smallFont }]}>
-            * No se encontraron coincidencias. Mostrando algunos dispositivos populares.
+            {t('sugerencias.sinCoincidencias', lang)}
             </Text>
         )}
 
         {sugeridos.map((item) => (
             <View key={item.id} style={[styles.card, { backgroundColor: cardColor }]}>
             <Image source={getImage(item.id)} style={styles.image} />
-            <Text style={[styles.name, { color: textColor, fontSize: subtitleFont }]}>{item.nombre}</Text>
-            <Text style={[styles.summary, { color: subTextColor, fontSize: smallFont }]}>{item.resumen}</Text>
+            <Text style={[styles.name, { color: textColor, fontSize: subtitleFont }]}>
+                {item.nombre}
+            </Text>
+            <Text style={[styles.summary, { color: subTextColor, fontSize: smallFont }]}>
+                {item.resumen}
+            </Text>
             <Pressable style={styles.button} onPress={() => elegirMovil(item.nombre)}>
-                <Text style={styles.buttonText}>Ver detalles</Text>
+                <Text style={styles.buttonText}>{t('sugerencias.verDetalles', lang)}</Text>
             </Pressable>
             </View>
         ))}

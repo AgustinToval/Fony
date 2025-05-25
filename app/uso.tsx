@@ -1,13 +1,17 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
+import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import { useCallback, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Uso() {
     const router = useRouter();
     const { settings } = useAppSettings();
     const lang = settings.idioma;
+    const yaLeido = useRef(false); // Para evitar repetición dentro de una misma visita
 
     const usos = [
         { label: t('uso.redes', lang), value: 'redes' },
@@ -18,7 +22,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     ];
 
     const seleccionarUso = (tipo: string) => {
-        console.log('Uso seleccionado:', tipo);
         router.push({ pathname: '/subuso', params: { uso: tipo } });
     };
 
@@ -27,6 +30,26 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     const textColor = isDark ? '#eee' : '#1e3a8a';
     const titleFont = getFontSize('large', settings.tamanioLetra);
     const buttonFont = getFontSize('medium', settings.tamanioLetra);
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            const mensaje =
+            `${t('uso.titulo', lang)}. ` +
+            (lang === 'es'
+                ? 'Seleccioná una opción que describa tu uso principal del celular.'
+                : 'Choose one option that best describes your main phone usage.');
+            if (!yaLeido.current) {
+            speak(mensaje, settings);
+            yaLeido.current = true;
+            }
+        }
+
+        return () => {
+            yaLeido.current = false; // Resetear al salir de pantalla
+        };
+        }, [settings.lectorPantalla, lang])
+    );
 
     return (
         <View style={[styles.container, { backgroundColor: bgColor }]}>

@@ -12,14 +12,40 @@
         titulo: 'Configuración',
         modoOscuro: '🌙 Modo oscuro',
         tamanoLetra: '🔠 Tamaño de letra',
-        lector: '🧏‍♂️ Lector para ciegos',
+        lector: '🔊 Lector en voz alta',
         idioma: '🌐 Idioma',
         moneda: '💱 Moneda',
         cancelar: 'Cancelar',
+        lectorLabel: {
+            modoOscuro: 'Modo oscuro',
+            tamanoLetra: 'Tamaño de letra',
+            lector: 'Lector en voz alta',
+            idioma: 'Idioma',
+            moneda: 'Moneda',
+        },
         tamanio: {
             pequeno: 'Pequeño',
             normal: 'Normal',
             grande: 'Grande',
+        },
+        feedback: {
+            modoOscuroOn: 'Modo oscuro activado',
+            modoOscuroOff: 'Modo oscuro desactivado',
+            lectorOn: 'Lector en voz alta activado',
+            lectorOff: 'Lector en voz alta desactivado',
+            tamanio: {
+            pequeno: 'Fuente pequeña seleccionada',
+            normal: 'Fuente normal seleccionada',
+            grande: 'Fuente grande seleccionada',
+            },
+            idioma: {
+            es: 'Idioma español seleccionado',
+            en: 'Idioma inglés seleccionado',
+            },
+            moneda: {
+            USD: 'Moneda dólar seleccionada',
+            EUR: 'Moneda euro seleccionada',
+            },
         },
         },
         sugerencias: {
@@ -30,11 +56,15 @@
         filtroFlexible: '* Mostrando resultados aproximados debido a falta de coincidencias exactas con tus preferencias.',
         },
         home: {
-        bienvenida: '¡Bienvenido a Fony!',
+        bienvenida: 'Menú principal',
         pregunta: '¿Qué quieres hacer hoy?',
         buscar: 'Buscar mi próximo celular',
         favoritos: 'Ver favoritos',
         sugerencias: 'Últimas sugerencias',
+        lector: {
+            bienvenida: 'Menú principal',
+            configuracion: 'Configuración',
+        },
         },
         disponibilidad: {
         pregunta: '¿Cuál es tu presupuesto estimado?',
@@ -42,13 +72,17 @@
         continuar: 'Continuar',
         },
         favoritos: {
-        titulo: '⭐ Tus favoritos',
-        vaciar: '🗑️ Vaciar todos',
+        titulo: 'Tus favoritos',
+        vaciar: 'Vaciar todos',
         vaciarConfirmar: '¿Estás seguro de que querés eliminar todos los favoritos?',
         ninguno: 'No se guardó ningún dispositivo aún.',
         verDetalles: 'Ver detalles',
         eliminar: 'Eliminar',
         eliminarConfirmar: '¿Estás seguro de que querés eliminar este dispositivo de favoritos?',
+        lector: {
+            titulo: 'Tus favoritos',
+            bienvenida: 'Estás en la pantalla de favoritos. Aquí puedes consultar tus dispositivos guardados, ver detalles, eliminarlos o vaciar la lista.',
+        },
         },
         index: {
         titulo: 'FONY',
@@ -96,6 +130,7 @@
         },
         subuso: {
         titulo: 'Indica la importancia para este uso:',
+        instruccion: 'Deslizá cada barra para indicar qué tan importante es cada aspecto.',
         continuar: 'Continuar',
         controlWeb: '[Control no disponible en versión web]',
         graficos: 'Gráficos avanzados',
@@ -129,14 +164,40 @@
         titulo: 'Settings',
         modoOscuro: '🌙 Dark mode',
         tamanoLetra: '🔠 Font size',
-        lector: '🧏‍♂️ Screen reader',
+        lector: '🔊 Voice reader',
         idioma: '🌐 Language',
         moneda: '💱 Currency',
         cancelar: 'Cancel',
+        lectorLabel: {
+            modoOscuro: 'Dark mode',
+            tamanoLetra: 'Font size',
+            lector: 'Voice reader',
+            idioma: 'Language',
+            moneda: 'Currency',
+        },
         tamanio: {
             pequeno: 'Small',
             normal: 'Normal',
             grande: 'Large',
+        },
+        feedback: {
+            modoOscuroOn: 'Dark mode enabled',
+            modoOscuroOff: 'Dark mode disabled',
+            lectorOn: 'Voice reader enabled',
+            lectorOff: 'Voice reader disabled',
+            tamanio: {
+            pequeno: 'Small font selected',
+            normal: 'Normal font selected',
+            grande: 'Large font selected',
+            },
+            idioma: {
+            es: 'Spanish language selected',
+            en: 'English language selected',
+            },
+            moneda: {
+            USD: 'Dollar currency selected',
+            EUR: 'Euro currency selected',
+            },
         },
         },
         sugerencias: {
@@ -147,11 +208,15 @@
         filtroFlexible: '* Showing approximate results due to lack of exact matches.',
         },
         home: {
-        bienvenida: 'Welcome to Fony!',
+        bienvenida: 'Main menu',
         pregunta: 'What would you like to do today?',
         buscar: 'Find my next phone',
         favoritos: 'View favorites',
         sugerencias: 'Latest suggestions',
+        lector: {
+            bienvenida: 'Main menu',
+            configuracion: 'Settings',
+        },
         },
         disponibilidad: {
         pregunta: 'What is your estimated budget?',
@@ -159,13 +224,17 @@
         continuar: 'Continue',
         },
         favoritos: {
-        titulo: '⭐ Your favorites',
-        vaciar: '🗑️ Clear all',
+        titulo: 'Your favorites',
+        vaciar: 'Clear all',
         vaciarConfirmar: 'Are you sure you want to delete all favorites?',
         ninguno: 'No devices saved yet.',
         verDetalles: 'View details',
         eliminar: 'Delete',
         eliminarConfirmar: 'Are you sure you want to delete this device from favorites?',
+        lector: {
+            titulo: 'Your favorites',
+            bienvenida: 'You are on the favorites screen. Here you can check your saved devices, view details, delete them or clear the list.',
+        },
         },
         index: {
         titulo: 'FONY',
@@ -213,6 +282,7 @@
         },
         subuso: {
         titulo: 'Indicate the importance for this use:',
+        instruccion: 'Slide each bar to show how important each aspect is.',
         continuar: 'Continue',
         controlWeb: '[Control not available in web version]',
         graficos: 'Advanced graphics',

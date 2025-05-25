@@ -1,6 +1,8 @@
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { t } from '@/utils/i18n';
-import { useRouter } from 'expo-router';
+import { speak } from '@/utils/speak';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
@@ -8,12 +10,33 @@ export default function Index() {
   const { settings } = useAppSettings();
   const lang = settings.idioma;
 
+  useFocusEffect(
+    useCallback(() => {
+      if (settings.lectorPantalla) {
+        const mensaje =
+          `${t('index.titulo', lang)}. ` +
+          `${t('index.subtitulo', lang)}. ` +
+          (lang === 'es'
+            ? 'Presione el botón para comenzar.'
+            : 'Press the button to start.');
+        speak(mensaje, settings);
+      }
+    }, [settings])
+  );
+
+  const handleStart = () => {
+    if (settings.lectorPantalla) {
+      speak(t('index.boton', lang), settings);
+    }
+    setTimeout(() => router.push('/perfil'), 800);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{t('index.titulo', lang)}</Text>
       <Text style={styles.subtitle}>{t('index.subtitulo', lang)}</Text>
 
-      <Pressable style={styles.button} onPress={() => router.push('/perfil')}>
+      <Pressable style={styles.button} onPress={handleStart}>
         <Text style={styles.buttonText}>{t('index.boton', lang)}</Text>
       </Pressable>
     </View>

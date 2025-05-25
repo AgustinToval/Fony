@@ -2,9 +2,10 @@
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
 import Slider from '@react-native-community/slider';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Disponibilidad() {
@@ -19,8 +20,30 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     const continuar = () => {
         const valorUSD = Math.round(monto / tasa);
         setPreferencias({ ...preferencias, presupuesto: valorUSD });
-        router.push('/preferencias');
+
+        if (settings.lectorPantalla) {
+        const mensaje =
+            settings.idioma === 'es'
+            ? `Continuando con un presupuesto de ${simbolo}${monto}`
+            : `Continuing with a budget of ${simbolo}${monto}`;
+        speak(mensaje, settings);
+        }
+
+        setTimeout(() => router.push('/preferencias'), 1000);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            const mensaje = `${t('disponibilidad.pregunta', settings.idioma)}. ${
+            settings.idioma === 'es'
+                ? 'Deslice el punto de la barra para seleccionar su disponibilidad económica.'
+                : 'Slide the dot to select your available budget.'
+            }`;
+            speak(mensaje, settings);
+        }
+        }, [settings])
+    );
 
     const isDark = settings.modoOscuro;
     const bgColor = isDark ? '#111' : '#fff';
@@ -35,7 +58,8 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
         {Platform.OS !== 'web' ? (
             <>
             <Text style={[styles.amount, { fontSize: getFontSize('medium', settings.tamanioLetra), color: '#2563eb' }]}>
-                {simbolo}{monto}
+                {simbolo}
+                {monto}
             </Text>
             <Slider
                 value={monto}

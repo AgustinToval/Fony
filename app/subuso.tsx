@@ -2,9 +2,10 @@
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
 import Slider from '@react-native-community/slider';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Subuso() {
@@ -24,6 +25,15 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
     const buttonFont = getFontSize('medium', settings.tamanioLetra);
 
     const [valores, setValores] = useState<Record<string, number>>({});
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            const mensaje = `${t('subuso.titulo', lang)}. ${t('subuso.instruccion', lang)}`;
+            speak(mensaje, settings);
+        }
+        }, [settings.lectorPantalla, lang])
+    );
 
     const handleChange = (key: string, value: number) => {
         setValores((prev) => ({ ...prev, [key]: value }));
@@ -75,7 +85,9 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
         {sliders.map((item) => (
             <View key={item.key} style={styles.sliderGroup}>
-            <Text style={[styles.label, { color: labelColor, fontSize: labelFont }]}>{item.label}</Text>
+            <Text style={[styles.label, { color: labelColor, fontSize: labelFont }]}>
+                {item.label}
+            </Text>
             {Platform.OS !== 'web' ? (
                 <Slider
                 value={valores[item.key] || 5}
@@ -95,7 +107,9 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
         ))}
 
         <Pressable style={styles.button} onPress={continuar}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>{t('subuso.continuar', lang)}</Text>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
+            {t('subuso.continuar', lang)}
+            </Text>
         </Pressable>
         </View>
     );

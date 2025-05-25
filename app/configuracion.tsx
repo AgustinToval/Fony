@@ -1,7 +1,9 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
-import { useState } from 'react';
+import { speak } from '@/utils/speak';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
     export default function Configuracion() {
@@ -35,6 +37,14 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
         ],
     };
 
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            speak(t('configuracion.titulo', settings.idioma), settings);
+        }
+        }, [settings])
+    );
+
     const renderModal = (tipo: 'tamanio' | 'idioma' | 'moneda') => (
         <Modal transparent animationType="fade" visible={modal === tipo}>
         <View style={styles.modalOverlay}>
@@ -45,10 +55,17 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
                 onPress={() => {
                     if (tipo === 'tamanio') {
                     actualizar({ tamanioLetra: op.value as typeof settings.tamanioLetra });
+                    speak(t(`configuracion.feedback.tamanio.${op.value}`, settings.idioma), settings);
                     } else if (tipo === 'idioma') {
-                    actualizar({ idioma: op.value as typeof settings.idioma });
+                    const nuevoIdioma = op.value as 'es' | 'en';
+                    actualizar({ idioma: nuevoIdioma });
+                    speak(t(`configuracion.feedback.idioma.${nuevoIdioma}`, nuevoIdioma), {
+                        ...settings,
+                        idioma: nuevoIdioma,
+                    });
                     } else if (tipo === 'moneda') {
                     actualizar({ moneda: op.value as typeof settings.moneda });
+                    speak(t(`configuracion.feedback.moneda.${op.value}`, settings.idioma), settings);
                     }
                     setModal(null);
                 }}
@@ -78,7 +95,11 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
             </Text>
             <Switch
             value={settings.modoOscuro}
-            onValueChange={(v) => setSettings({ modoOscuro: v })}
+            onValueChange={(v) => {
+                setSettings({ modoOscuro: v });
+                const msgKey = v ? 'modoOscuroOn' : 'modoOscuroOff';
+                speak(t(`configuracion.feedback.${msgKey}`, settings.idioma), settings);
+            }}
             style={styles.switch}
             />
         </View>
@@ -91,7 +112,10 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
             </Text>
             <Pressable
             style={[styles.selector, { backgroundColor: isDark ? '#222' : '#f0f0f0' }]}
-            onPress={() => setModal('tamanio')}
+            onPress={() => {
+                setModal('tamanio');
+                speak(t('configuracion.lectorLabel.tamanoLetra', settings.idioma), settings);
+            }}
             >
             <Text style={{ color: textColor, fontSize: pickerFont }}>
                 {opciones.tamanio.find((o) => o.value === settings.tamanioLetra)?.label}
@@ -101,15 +125,21 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
         </View>
         <View style={styles.divider} />
 
-        {/* Lector para ciegos */}
+        {/* Lector en voz alta */}
         <View style={styles.setting}>
             <Text style={[styles.label, { color: textColor, fontSize: labelFont }]}>
             {t('configuracion.lector', settings.idioma)}
             </Text>
             <Switch
             value={settings.lectorPantalla}
-            onValueChange={(v) => setSettings({ lectorPantalla: v })}
-            style={styles.switch}
+            onValueChange={(v) => {
+                const msgKey = v ? 'lectorOn' : 'lectorOff';
+                const mensaje = t(`configuracion.feedback.${msgKey}`, settings.idioma);
+                setSettings({ lectorPantalla: v });
+                setTimeout(() => {
+                speak(mensaje, { ...settings, lectorPantalla: v });
+                }, 100);
+            }}
             />
         </View>
         <View style={styles.divider} />
@@ -121,7 +151,10 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
             </Text>
             <Pressable
             style={[styles.selector, { backgroundColor: isDark ? '#222' : '#f0f0f0' }]}
-            onPress={() => setModal('idioma')}
+            onPress={() => {
+                setModal('idioma');
+                speak(t('configuracion.lectorLabel.idioma', settings.idioma), settings);
+            }}
             >
             <Text style={{ color: textColor, fontSize: pickerFont }}>
                 {opciones.idioma.find((o) => o.value === settings.idioma)?.label}
@@ -138,7 +171,10 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
             </Text>
             <Pressable
             style={[styles.selector, { backgroundColor: isDark ? '#222' : '#f0f0f0' }]}
-            onPress={() => setModal('moneda')}
+            onPress={() => {
+                setModal('moneda');
+                speak(t('configuracion.lectorLabel.moneda', settings.idioma), settings);
+            }}
             >
             <Text style={{ color: textColor, fontSize: pickerFont }}>
                 {opciones.moneda.find((o) => o.value === settings.moneda)?.label}

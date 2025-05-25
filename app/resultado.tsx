@@ -4,9 +4,20 @@ import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
 import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import {
+    Alert,
+    Image,
+    Linking,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
 
     export default function Resultado() {
     const { preferencias } = useUserPreferences();
@@ -27,12 +38,18 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
     const bodyFont = getFontSize('small', settings.tamanioLetra);
 
     const convertirPrecio = (precioUSD: number) => {
-        return settings.moneda === 'EUR'
-        ? Math.round(precioUSD * 0.92)
-        : precioUSD;
+        return settings.moneda === 'EUR' ? Math.round(precioUSD * 0.92) : precioUSD;
     };
 
     const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla && modelo) {
+            speak(`${modelo.nombre}. ${modelo.resumen}`, settings);
+        }
+        }, [modelo, settings])
+    );
 
     if (!modelo) {
         return (
@@ -65,9 +82,13 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
 
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
-        <Text style={[styles.title, { fontSize: titleFont, color: textColor }]}>{modelo.nombre}</Text>
+        <Text style={[styles.title, { fontSize: titleFont, color: textColor }]}>
+            {modelo.nombre}
+        </Text>
         <Image source={getImage(modelo.id)} style={styles.image} />
-        <Text style={[styles.summary, { fontSize: bodyFont, color: secondaryText }]}>{modelo.resumen}</Text>
+        <Text style={[styles.summary, { fontSize: bodyFont, color: secondaryText }]}>
+            {modelo.resumen}
+        </Text>
 
         <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>
             {t('resultado.enlaces', lang)}
@@ -75,25 +96,41 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
         {modelo.linksCompra &&
             Object.entries(modelo.linksCompra).map(([tienda, url]) => (
             <Pressable key={tienda} style={styles.button} onPress={() => Linking.openURL(url)}>
-                <Text style={[styles.buttonText, { fontSize: bodyFont }]}>{t('resultado.verEn', lang)} {tienda}</Text>
+                <Text style={[styles.buttonText, { fontSize: bodyFont }]}>
+                {t('resultado.verEn', lang)} {tienda}
+                </Text>
             </Pressable>
             ))}
 
         <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>
             {t('resultado.especificaciones', lang)}
         </Text>
-        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.marca', lang)}: {modelo.marca}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.precio', lang)}: {simbolo}{convertirPrecio(modelo.precio)}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.colores', lang)}: {modelo.color.join(', ')}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.tamano', lang)}: {modelo.tamano}</Text>
-        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.usoIdeal', lang)}: {modelo.usoIdeal.join(', ')}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>
+            {t('resultado.marca', lang)}: {modelo.marca}
+        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>
+            {t('resultado.precio', lang)}: {simbolo}{convertirPrecio(modelo.precio)}
+        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>
+            {t('resultado.colores', lang)}: {modelo.color.join(', ')}
+        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>
+            {t('resultado.tamano', lang)}: {modelo.tamano}
+        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>
+            {t('resultado.usoIdeal', lang)}: {modelo.usoIdeal.join(', ')}
+        </Text>
 
         <Pressable style={styles.favButton} onPress={guardarFavorito}>
-            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>{t('resultado.favorito', lang)}</Text>
+            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>
+            {t('resultado.favorito', lang)}
+            </Text>
         </Pressable>
 
         <Pressable style={styles.backButton} onPress={() => router.replace('/home')}>
-            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>{t('resultado.volver', lang)}</Text>
+            <Text style={[styles.buttonText, { fontSize: bodyFont }]}>
+            {t('resultado.volver', lang)}
+            </Text>
         </Pressable>
         </ScrollView>
     );

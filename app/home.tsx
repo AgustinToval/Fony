@@ -1,23 +1,41 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
+import { speak } from '@/utils/speak';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Home() {
     const router = useRouter();
     const { settings } = useAppSettings();
-    const { colors, dark } = useTheme();
+    const { colors } = useTheme();
 
     const titleFont = getFontSize('large', settings.tamanioLetra);
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const buttonFont = getFontSize('medium', settings.tamanioLetra);
 
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            speak(t('home.lector.bienvenida', settings.idioma), settings);
+        }
+        }, [settings])
+    );
+
+    const manejarBoton = (destino: string, mensaje: string) => {
+        if (settings.lectorPantalla) speak(mensaje, settings);
+        setTimeout(() => router.push(destino as any), 800);
+    };
+
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Pressable style={styles.settingsIcon} onPress={() => router.push('/configuracion')}>
+        <Pressable
+            style={styles.settingsIcon}
+            onPress={() => manejarBoton('/configuracion', t('home.lector.configuracion', settings.idioma))}
+        >
             <Ionicons name="settings-outline" size={26} color={colors.text} />
         </Pressable>
 
@@ -28,22 +46,16 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
             {t('home.pregunta', settings.idioma)}
         </Text>
 
-        <Pressable style={styles.button} onPress={() => router.push('/perfil')}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
-            📱 {t('home.buscar', settings.idioma)}
-            </Text>
+        <Pressable style={styles.button} onPress={() => manejarBoton('/perfil', t('home.buscar', settings.idioma))}>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>📱 {t('home.buscar', settings.idioma)}</Text>
         </Pressable>
 
-        <Pressable style={styles.button} onPress={() => router.push('/favoritos')}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
-            ⭐ {t('home.favoritos', settings.idioma)}
-            </Text>
+        <Pressable style={styles.button} onPress={() => manejarBoton('/favoritos', t('home.favoritos', settings.idioma))}>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>⭐ {t('home.favoritos', settings.idioma)}</Text>
         </Pressable>
 
-        <Pressable style={styles.button} onPress={() => router.push('/sugerencias')}>
-            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>
-            🛒 {t('home.sugerencias', settings.idioma)}
-            </Text>
+        <Pressable style={styles.button} onPress={() => manejarBoton('/sugerencias', t('home.sugerencias', settings.idioma))}>
+            <Text style={[styles.buttonText, { fontSize: buttonFont }]}>🛒 {t('home.sugerencias', settings.idioma)}</Text>
         </Pressable>
         </View>
     );

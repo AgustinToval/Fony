@@ -1,7 +1,9 @@
     import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
-import { useRouter } from 'expo-router';
+import { speak } from '@/utils/speak';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
     export default function Perfil() {
@@ -15,9 +17,24 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
         { label: t('perfil.experto', lang), value: 'experto' },
     ];
 
-    const seleccionarPerfil = (tipo: string) => {
-        console.log('Perfil seleccionado:', tipo);
-        router.push('/uso');
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            const mensaje =
+            `${t('perfil.titulo', lang)}. ` +
+            (lang === 'es'
+                ? 'Seleccioná tu perfil.'
+                : 'Select the profile that best matches you.');
+            speak(mensaje, settings);
+        }
+        }, [settings])
+    );
+
+    const seleccionarPerfil = (tipo: string, label: string) => {
+        if (settings.lectorPantalla) {
+        speak(label, settings);
+        }
+        setTimeout(() => router.push('/uso'), 800);
     };
 
     const isDark = settings.modoOscuro;
@@ -36,7 +53,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
             <Pressable
             key={perfil.value}
             style={styles.button}
-            onPress={() => seleccionarPerfil(perfil.value)}
+            onPress={() => seleccionarPerfil(perfil.value, perfil.label)}
             >
             <Text style={[styles.buttonText, { fontSize: buttonFont }]}>{perfil.label}</Text>
             </Pressable>

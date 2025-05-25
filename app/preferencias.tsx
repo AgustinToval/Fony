@@ -2,8 +2,9 @@
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { t } from '@/utils/i18n';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { speak } from '@/utils/speak';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
     Modal,
     Pressable,
@@ -28,6 +29,18 @@ import {
     const [usarTamano, setUsarTamano] = useState(false);
 
     const [modal, setModal] = useState<'marca' | 'color' | 'tamano' | null>(null);
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla) {
+            const intro =
+            lang === 'es'
+                ? 'Selecciona si tienes alguna preferencia de marca, color o tamaño.'
+                : 'Choose if you have a preference for brand, color, or size.';
+            speak(`${t('preferencias.pregMarca', lang)}. ${intro}`, settings);
+        }
+        }, [settings])
+    );
 
     const continuar = () => {
         setPreferencias({
@@ -85,6 +98,7 @@ import {
                 onPress={() => {
                     setter(op.value);
                     setModal(null);
+                    if (settings.lectorPantalla) speak(op.label, settings);
                 }}
                 style={styles.modalOption}
                 >
@@ -115,7 +129,10 @@ import {
         </View>
         {usarMarca && (
             <>
-            <Pressable style={styles.selectBox} onPress={() => setModal('marca')}>
+            <Pressable style={styles.selectBox} onPress={() => {
+                setModal('marca');
+                if (settings.lectorPantalla) speak(t('preferencias.pregMarca', lang), settings);
+            }}>
                 <Text style={{ color: textColor }}>{marcaDeseada}</Text>
             </Pressable>
             {renderModal('marca', marcaDeseada, setMarcaDeseada)}
@@ -136,7 +153,10 @@ import {
         </View>
         {usarColor && (
             <>
-            <Pressable style={styles.selectBox} onPress={() => setModal('color')}>
+            <Pressable style={styles.selectBox} onPress={() => {
+                setModal('color');
+                if (settings.lectorPantalla) speak(t('preferencias.pregColor', lang), settings);
+            }}>
                 <Text style={{ color: textColor }}>{colorDeseado}</Text>
             </Pressable>
             {renderModal('color', colorDeseado, setColorDeseado)}
@@ -157,7 +177,10 @@ import {
         </View>
         {usarTamano && (
             <>
-            <Pressable style={styles.selectBox} onPress={() => setModal('tamano')}>
+            <Pressable style={styles.selectBox} onPress={() => {
+                setModal('tamano');
+                if (settings.lectorPantalla) speak(t('preferencias.pregTamano', lang), settings);
+            }}>
                 <Text style={{ color: textColor }}>{tamanoDeseado}</Text>
             </Pressable>
             {renderModal('tamano', tamanoDeseado, setTamanoDeseado)}
