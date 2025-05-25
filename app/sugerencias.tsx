@@ -4,9 +4,10 @@ import { useAppSettings } from '@/hooks/useAppSettings';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
 import { t } from '@/utils/i18n';
-import { speak } from '@/utils/speak';
+import { speak, stopSpeech } from '@/utils/speak';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
+
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 
@@ -126,9 +127,11 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     }, [preferencias]);
 
     const elegirMovil = (movil: string) => {
-        setPreferencias({ ...preferencias, movilElegido: movil });
-        router.push('/resultado');
+    stopSpeech();
+    setPreferencias({ ...preferencias, movilElegido: movil });
+    router.push('/resultado');
     };
+
 
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>

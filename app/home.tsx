@@ -5,6 +5,7 @@ import { speak } from '@/utils/speak';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { useFocusEffect, useRouter } from 'expo-router';
+import * as Speech from 'expo-speech';
 import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -22,12 +23,16 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
         if (settings.lectorPantalla) {
             speak(t('home.lector.bienvenida', settings.idioma), settings);
         }
+
+        return () => {
+            Speech.stop(); // ⬅️ Detener lectura al salir de la pantalla
+        };
         }, [settings])
     );
 
     const manejarBoton = (destino: string, mensaje: string) => {
         if (settings.lectorPantalla) speak(mensaje, settings);
-        setTimeout(() => router.push(destino as any), 800);
+        setTimeout(() => router.push(destino as any), 1500); // ⬅️ Más tiempo para que se escuche completo
     };
 
     return (
@@ -54,7 +59,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
             <Text style={[styles.buttonText, { fontSize: buttonFont }]}>⭐ {t('home.favoritos', settings.idioma)}</Text>
         </Pressable>
 
-        <Pressable style={styles.button} onPress={() => manejarBoton('/sugerencias', t('home.sugerencias', settings.idioma))}>
+        <Pressable
+            style={styles.button}
+            onPress={() => manejarBoton('/sugerencias', t('home.sugerencias', settings.idioma))}
+        >
             <Text style={[styles.buttonText, { fontSize: buttonFont }]}>🛒 {t('home.sugerencias', settings.idioma)}</Text>
         </Pressable>
         </View>

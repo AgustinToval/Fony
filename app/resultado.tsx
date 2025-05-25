@@ -7,6 +7,7 @@ import { t } from '@/utils/i18n';
 import { speak } from '@/utils/speak';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
+import * as Speech from 'expo-speech';
 import { useCallback } from 'react';
 import {
     Alert,
@@ -44,12 +45,17 @@ import {
     const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
 
     useFocusEffect(
-        useCallback(() => {
+    useCallback(() => {
         if (settings.lectorPantalla && modelo) {
-            speak(`${modelo.nombre}. ${modelo.resumen}`, settings);
+        speak(`${modelo.nombre}`, settings); // Solo lee el nombre
         }
-        }, [modelo, settings])
+
+        return () => {
+        Speech.stop(); // Detener lectura al salir
+        };
+    }, [modelo, settings])
     );
+
 
     if (!modelo) {
         return (
