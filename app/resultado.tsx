@@ -1,6 +1,6 @@
-    import celularesData from '@/assets/data/celulares.json';
-import { useUserPreferences } from '@/context/UserPreferencesContext';
+    import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
+import { getCelulares } from '@/utils/api';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
 import { t } from '@/utils/i18n';
@@ -8,17 +8,8 @@ import { speak } from '@/utils/speak';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as Speech from 'expo-speech';
-import { useCallback } from 'react';
-import {
-    Alert,
-    Image,
-    Linking,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
     export default function Resultado() {
     const { preferencias } = useUserPreferences();
@@ -26,7 +17,23 @@ import {
     const lang = settings.idioma;
     const router = useRouter();
 
-    const modelo = celularesData.find((cel) => cel.nombre === preferencias.movilElegido);
+    const [modelo, setModelo] = useState<any>(null);
+
+    useEffect(() => {
+        getCelulares().then((data) => {
+        const encontrado = data.find((cel: any) => cel.nombre === preferencias.movilElegido);
+        setModelo(encontrado);
+        });
+    }, [preferencias.movilElegido]);
+
+    useFocusEffect(
+        useCallback(() => {
+        if (settings.lectorPantalla && modelo) {
+            speak(`${modelo.nombre}`, settings);
+        }
+        return () => Speech.stop();
+        }, [modelo, settings])
+    );
 
     const isDark = settings.modoOscuro;
     const bgColor = isDark ? '#111' : '#fff';
@@ -37,25 +44,10 @@ import {
     const titleFont = getFontSize('large', settings.tamanioLetra);
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const bodyFont = getFontSize('small', settings.tamanioLetra);
-
-    const convertirPrecio = (precioUSD: number) => {
-        return settings.moneda === 'EUR' ? Math.round(precioUSD * 0.92) : precioUSD;
-    };
-
     const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
 
-    useFocusEffect(
-    useCallback(() => {
-        if (settings.lectorPantalla && modelo) {
-        speak(`${modelo.nombre}`, settings); // Solo lee el nombre
-        }
-
-        return () => {
-        Speech.stop(); // Detener lectura al salir
-        };
-    }, [modelo, settings])
-    );
-
+    const convertirPrecio = (precioUSD: number) =>
+        settings.moneda === 'EUR' ? Math.round(precioUSD * 0.92) : precioUSD;
 
     if (!modelo) {
         return (
@@ -72,7 +64,6 @@ import {
         const almacenados = await AsyncStorage.getItem('favoritos');
         const favoritos = almacenados ? JSON.parse(almacenados) : [];
         const yaExiste = favoritos.some((item: any) => item.id === modelo.id);
-
         if (!yaExiste) {
             favoritos.push(modelo);
             await AsyncStorage.setItem('favoritos', JSON.stringify(favoritos));
@@ -88,9 +79,7 @@ import {
 
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
-        <Text style={[styles.title, { fontSize: titleFont, color: textColor }]}>
-            {modelo.nombre}
-        </Text>
+        <Text style={[styles.title, { fontSize: titleFont, color: textColor }]}>{modelo.nombre}</Text>
         <Image source={getImage(modelo.id)} style={styles.image} />
         <Text style={[styles.summary, { fontSize: bodyFont, color: secondaryText }]}>
             {modelo.resumen}
@@ -100,29 +89,25 @@ import {
             {t('resultado.enlaces', lang)}
         </Text>
         {modelo.linksCompra &&
-            Object.entries(modelo.linksCompra).map(([tienda, url]) => (
-            <Pressable key={tienda} style={styles.button} onPress={() => Linking.openURL(url)}>
+            Object.entries(modelo.linksCompra).map(([tienda, url]) =>
+            url ? (
+                <Pressable key={tienda} style={styles.button} onPress={() => Linking.openURL(String(url))}>
                 <Text style={[styles.buttonText, { fontSize: bodyFont }]}>
-                {t('resultado.verEn', lang)} {tienda}
+                    {t('resultado.verEn', lang)} {tienda}
                 </Text>
-            </Pressable>
-            ))}
+                </Pressable>
+            ) : null
+            )}
 
         <Text style={[styles.sectionTitle, { fontSize: subtitleFont, color: textColor }]}>
             {t('resultado.especificaciones', lang)}
         </Text>
-        <Text style={[styles.spec, { color: specColor }]}>
-            {t('resultado.marca', lang)}: {modelo.marca}
-        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.marca', lang)}: {modelo.marca}</Text>
         <Text style={[styles.spec, { color: specColor }]}>
             {t('resultado.precio', lang)}: {simbolo}{convertirPrecio(modelo.precio)}
         </Text>
-        <Text style={[styles.spec, { color: specColor }]}>
-            {t('resultado.colores', lang)}: {modelo.color.join(', ')}
-        </Text>
-        <Text style={[styles.spec, { color: specColor }]}>
-            {t('resultado.tamano', lang)}: {modelo.tamano}
-        </Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.colores', lang)}: {modelo.color.join(', ')}</Text>
+        <Text style={[styles.spec, { color: specColor }]}>{t('resultado.tamano', lang)}: {modelo.tamano}</Text>
         <Text style={[styles.spec, { color: specColor }]}>
             {t('resultado.usoIdeal', lang)}: {modelo.usoIdeal.join(', ')}
         </Text>

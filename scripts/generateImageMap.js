@@ -1,12 +1,14 @@
     const fs = require('fs');
     const path = require('path');
 
-    // Rutas base
-    const dataPath = path.join(__dirname, '../assets/data/celulares.json');
+    // Paths actualizados
+    const dataPath = path.join(__dirname, '../db.json');
     const imagesDir = path.join(__dirname, '../assets/images');
     const outputPath = path.join(__dirname, '../utils/getImage.ts');
 
-    const celulares = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    // Cargar celulares desde db.json
+    const db = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    const celulares = db.celulares;
 
     let missingFiles = [];
 
@@ -15,7 +17,6 @@
     const file = cel.idImagen.replace(/['"]/g, '');
     const imagePath = path.join(imagesDir, file);
 
-    // Verifica si el archivo realmente existe
     if (!fs.existsSync(imagePath)) {
         missingFiles.push({ id, file });
     }
@@ -35,10 +36,9 @@
     `;
 
     fs.writeFileSync(outputPath, fileContent, 'utf-8');
-
     console.log(`✅ Archivo generado: utils/getImage.ts con ${lines.length} entradas.`);
 
-    // Advertencias
+    // Verificación
     if (missingFiles.length > 0) {
     console.warn('\n⚠️ Archivos de imagen NO encontrados:');
     missingFiles.forEach(({ id, file }) => {
@@ -48,9 +48,3 @@
     } else {
     console.log('🟢 Todas las imágenes están presentes.');
     }
-
-
-
-    // Comando para correr el script: node scripts/generateImageMap.js    El archivo utils/getImage.ts se sobreescribirá automáticamente cada vez que corramos este comando.
-
-

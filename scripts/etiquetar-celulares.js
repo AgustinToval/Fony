@@ -1,8 +1,8 @@
     const fs = require('fs');
     const path = require('path');
 
-    // Paths
-    const jsonPath = path.join(__dirname, '../assets/data/celulares.json');
+    // Path actualizado
+    const jsonPath = path.join(__dirname, '../db.json');
 
     // Reglas base para generar etiquetas
     const reglas = {
@@ -29,14 +29,15 @@
         }
     });
 
-    // Limpia propiedades con valores undefined
     return Object.fromEntries(
         Object.entries(etiquetas).filter(([_, val]) => val !== undefined)
     );
     };
 
     // Cargar y procesar
-    const celulares = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    const db = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    const celulares = db.celulares;
+
     const actualizados = celulares.map((cel) => {
     const nuevasEtiquetas = generarEtiquetas(cel.usoIdeal || []);
     const etiquetasFinales = cel.etiquetas || nuevasEtiquetas;
@@ -48,9 +49,6 @@
     return { ...cel, etiquetas: etiquetasLimpias };
     });
 
-    // Guardar resultado
-    fs.writeFileSync(jsonPath, JSON.stringify(actualizados, null, 2), 'utf8');
-    console.log(`✅ Archivo actualizado: celulares.json con ${actualizados.length} dispositivos.`);
-
-
-        //node scripts/etiquetar-celulares.js  para correr el script
+    // Guardar db actualizado
+    fs.writeFileSync(jsonPath, JSON.stringify({ celulares: actualizados }, null, 2), 'utf8');
+    console.log(`✅ Archivo actualizado: db.json con ${actualizados.length} dispositivos.`);

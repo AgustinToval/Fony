@@ -1,15 +1,13 @@
-import celularesData from '@/assets/data/celulares.json';
-import { useUserPreferences } from '@/context/UserPreferencesContext';
+    import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { useAppSettings } from '@/hooks/useAppSettings';
+import { getCelulares } from '@/utils/api';
 import { getFontSize } from '@/utils/getFontSize';
 import { getImage } from '@/utils/getImage';
 import { t } from '@/utils/i18n';
 import { speak, stopSpeech } from '@/utils/speak';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-
 
     type Celular = {
     id: string;
@@ -73,65 +71,65 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     };
 
     useEffect(() => {
+        getCelulares().then((celulares: Celular[]) => {
         const usoPreferido = normalizarUso(preferencias.uso || '');
-        const celulares: Celular[] = celularesData as unknown as Celular[];
 
         let resultados = celulares.filter((cel) => {
-        const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
-        const coincideMarca =
+            const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
+            const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
+            const coincideMarca =
             preferencias.marcaPreferida === 'ninguna' ||
             cel.marca.toLowerCase() === (preferencias.marcaPreferida?.toLowerCase() ?? '');
-        const coincideColor =
+            const coincideColor =
             preferencias.colorPreferido === 'ninguno' ||
             cel.color.some((c) =>
-            c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '') ===
-            preferencias.colorPreferido?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '')
+                c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '') ===
+                preferencias.colorPreferido?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '')
             );
-        const coincideTamano =
+            const coincideTamano =
             preferencias.tamanoPreferido === 'ninguno' ||
             cel.tamano.toLowerCase() === (preferencias.tamanoPreferido?.toLowerCase() ?? '');
 
-        return coincidePresupuesto && coincideUso && coincideMarca && coincideColor && coincideTamano;
+            return coincidePresupuesto && coincideUso && coincideMarca && coincideColor && coincideTamano;
         });
 
         if (resultados.length > 0) {
-        const conPuntaje = resultados
+            const conPuntaje = resultados
             .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
             .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
-        setUsoFiltroFlexible(false);
-        setSinCoincidencias(false);
-        setSugeridos(conPuntaje.slice(0, 3));
-        return;
+            setUsoFiltroFlexible(false);
+            setSinCoincidencias(false);
+            setSugeridos(conPuntaje.slice(0, 3));
+            return;
         }
 
         resultados = celulares.filter((cel) => {
-        const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-        const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
-        return coincidePresupuesto && coincideUso;
+            const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
+            const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
+            return coincidePresupuesto && coincideUso;
         });
 
         if (resultados.length > 0) {
-        const conPuntaje = resultados
+            const conPuntaje = resultados
             .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
             .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
-        setUsoFiltroFlexible(true);
-        setSinCoincidencias(false);
-        setSugeridos(conPuntaje.slice(0, 3));
-        return;
+            setUsoFiltroFlexible(true);
+            setSinCoincidencias(false);
+            setSugeridos(conPuntaje.slice(0, 3));
+            return;
         }
 
         setUsoFiltroFlexible(true);
         setSinCoincidencias(true);
         setSugeridos(celulares.slice(0, 3));
+        });
     }, [preferencias]);
 
     const elegirMovil = (movil: string) => {
-    stopSpeech();
-    setPreferencias({ ...preferencias, movilElegido: movil });
-    router.push('/resultado');
+        stopSpeech();
+        setPreferencias({ ...preferencias, movilElegido: movil });
+        router.push('/resultado');
     };
-
 
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: bgColor }]}>
