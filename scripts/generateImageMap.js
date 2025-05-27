@@ -1,8 +1,8 @@
     const fs = require('fs');
     const path = require('path');
 
-    // Paths actualizados
-    const dataPath = path.join(__dirname, '../db.json');
+    // 🔧 Ruta a db.json de FONY-API
+    const dataPath = path.join(__dirname, '../../FONY-API/db.json');
     const imagesDir = path.join(__dirname, '../assets/images');
     const outputPath = path.join(__dirname, '../utils/getImage.ts');
 

@@ -1,8 +1,8 @@
     const fs = require('fs');
     const path = require('path');
 
-    // Path actualizado
-    const jsonPath = path.join(__dirname, '../db.json');
+    // 🔧 Ruta actualizada a db.json dentro de FONY-API
+    const jsonPath = path.join(__dirname, '../../../Fony-api/db.json');
 
     // Reglas base para generar etiquetas
     const reglas = {
