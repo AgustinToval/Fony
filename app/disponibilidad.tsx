@@ -8,19 +8,27 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
+
+// Pantalla para que el usuario seleccione cuánto puede gastar
     export default function Disponibilidad() {
     const router = useRouter();
     const { setPreferencias, preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
 
+    // Conversión según moneda seleccionada
     const simbolo = settings.moneda === 'EUR' ? '€' : 'US$';
     const tasa = settings.moneda === 'EUR' ? 0.93 : 1;
+
+    // Valor inicial del presupuesto (en moneda seleccionada)
     const [monto, setMonto] = useState(500);
 
+    // Al continuar, se guarda el presupuesto en USD y se navega a la siguiente pantalla
     const continuar = () => {
         const valorUSD = Math.round(monto / tasa);
         setPreferencias({ ...preferencias, presupuesto: valorUSD });
 
+
+        // Mensaje de voz accesible (lector activado)
         if (settings.lectorPantalla) {
         const mensaje =
             settings.idioma === 'es'
@@ -29,9 +37,11 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
         speak(mensaje, settings);
         }
 
+        // Delay para permitir que el lector alcance a reproducirse antes de cambiar de pantalla
         setTimeout(() => router.push('/preferencias'), 1000);
     };
 
+    // Activar mensaje accesible al entrar a la pantalla
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -77,6 +87,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
             </Text>
         )}
 
+      {/* Botón para confirmar selección y avanzar */}
         <Pressable style={styles.button} onPress={continuar}>
             <Text style={[styles.buttonText, { fontSize: getFontSize('medium', settings.tamanioLetra) }]}>
             {t('disponibilidad.continuar', settings.idioma)}

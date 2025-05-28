@@ -8,8 +8,10 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
+// Esta pantalla permite al usuario ajustar su nivel de importancia sobre distintos subusos,
+// según el uso principal que eligió previamente (ej: gaming, multimedia, trabajo, etc).
     export default function Subuso() {
-    const { uso } = useLocalSearchParams();
+    const { uso } = useLocalSearchParams(); // Obtener el uso principal desde los parámetros de navegación
     const router = useRouter();
     const { setPreferencias } = useUserPreferences();
     const { settings } = useAppSettings();

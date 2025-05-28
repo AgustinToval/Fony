@@ -11,6 +11,7 @@ import * as Speech from 'expo-speech';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+// Pantalla final que muestra al usuario el resultado recomendado según sus preferencias
     export default function Resultado() {
     const { preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
@@ -19,6 +20,7 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
 
     const [modelo, setModelo] = useState<any>(null);
 
+      // Al iniciar la pantalla, buscamos en la API el dispositivo seleccionado
     useEffect(() => {
         getCelulares().then((data) => {
         const encontrado = data.find((cel: any) => cel.nombre === preferencias.movilElegido);
@@ -26,6 +28,7 @@ import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } 
         });
     }, [preferencias.movilElegido]);
 
+      // Si el lector está activado, reproducimos el nombre del modelo recomendado
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla && modelo) {

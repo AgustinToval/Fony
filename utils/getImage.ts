@@ -1,4 +1,4 @@
-// ⚠️ Archivo generado automáticamente desde generateImageMap.js
+// Archivo generado automáticamente desde generateImageMap.js
 
     const imageMap: Record<string, any> = {
       s23: require('@/assets/images/s23.png'),

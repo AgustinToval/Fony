@@ -25,8 +25,8 @@
         <UserPreferencesProvider>
           <Stack
             screenOptions={{
-              headerTitle: '', // No mostrar título de la pantalla
-              headerBackVisible: true, // No mostrar el texto de "volver"
+              headerTitle: '', 
+              headerBackVisible: true,
             }}
           >
             <Stack.Screen name="index" options={{ headerShown: false }} />

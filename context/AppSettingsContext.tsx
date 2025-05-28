@@ -1,7 +1,7 @@
     import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-    // ✅ Definimos el tipo directamente aquí
+    // Definimos el tipo directamente 
     export type AppSettings = {
     idioma: 'es' | 'en';
     moneda: 'USD' | 'EUR';

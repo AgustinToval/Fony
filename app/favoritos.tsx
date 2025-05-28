@@ -9,6 +9,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+// Pantalla de favoritos. Muestra los celulares guardados y permite eliminarlos.
     export default function Favoritos() {
     const [favoritos, setFavoritos] = useState<any[]>([]);
     const router = useRouter();
@@ -21,6 +22,7 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
     const cardBg = settings.modoOscuro ? '#222' : '#f0f0f0';
     const fontSize = getFontSize('medium', settings.tamanioLetra);
 
+    // Al mostrar la pantalla, se cargan los favoritos guardados en AsyncStorage
     useEffect(() => {
         const obtenerFavoritos = async () => {
         try {
@@ -36,6 +38,7 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         obtenerFavoritos();
     }, []);
 
+    // Si el lector está activado, se anuncia el contenido de la pantalla
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -45,11 +48,14 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         }, [settings])
     );
 
+
+    // Guarda en contexto el móvil seleccionado y navega al detalle
     const verDetalle = (nombre: string) => {
         setPreferencias({ ...preferencias, movilElegido: nombre });
         router.push('/resultado');
     };
 
+    // Borra un favorito de la lista
     const borrarFavorito = async (id: string) => {
         const nuevos = favoritos.filter((cel) => cel.id !== id);
         await AsyncStorage.setItem('favoritos', JSON.stringify(nuevos));
@@ -57,6 +63,7 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         Alert.alert(t('favoritos.eliminar', lang));
     };
 
+    // Confirma antes de borrar un único favorito
     const confirmarEliminar = (id: string) => {
         Alert.alert(
         t('favoritos.eliminar', lang),
@@ -68,6 +75,7 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'rea
         );
     };
 
+    // Vacía toda la lista de favoritos
     const vaciarFavoritos = async () => {
         Alert.alert(
         t('favoritos.vaciar', lang),

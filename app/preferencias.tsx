@@ -14,12 +14,15 @@ import {
     View,
 } from 'react-native';
 
+// Esta pantalla permite configurar preferencias adicionales que pueden influir en las recomendaciones.
     export default function Preferencias() {
     const router = useRouter();
     const { setPreferencias, preferencias } = useUserPreferences();
     const { settings } = useAppSettings();
     const lang = settings.idioma;
 
+
+      // Estados para almacenar selecciones y activar campos
     const [marcaDeseada, setMarcaDeseada] = useState('ninguna');
     const [colorDeseado, setColorDeseado] = useState('ninguno');
     const [tamanoDeseado, setTamanoDeseado] = useState('ninguno');
@@ -30,6 +33,7 @@ import {
 
     const [modal, setModal] = useState<'marca' | 'color' | 'tamano' | null>(null);
 
+      // Al entrar, el lector de pantalla explica el objetivo de esta pantalla.
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -42,6 +46,7 @@ import {
         }, [settings])
     );
 
+      // Guardar preferencias y continuar
     const continuar = () => {
         setPreferencias({
         ...preferencias,

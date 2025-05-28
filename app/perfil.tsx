@@ -6,17 +6,20 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+// Esta pantalla permite que el usuario seleccione su nivel de experiencia o tipo de perfil.
     export default function Perfil() {
     const router = useRouter();
     const { settings } = useAppSettings();
     const lang = settings.idioma;
 
+      // Definimos los perfiles posibles que guiarán las recomendaciones futuras.
     const perfiles = [
         { label: t('perfil.mayor', lang), value: 'mayor' },
         { label: t('perfil.basico', lang), value: 'basico' },
         { label: t('perfil.experto', lang), value: 'experto' },
     ];
 
+      // Al entrar en la pantalla, el lector de pantalla da instrucciones al usuario.
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -30,6 +33,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
         }, [settings])
     );
 
+      // Guarda el perfil seleccionado y avanza al siguiente paso del formulario
     const seleccionarPerfil = (tipo: string, label: string) => {
         if (settings.lectorPantalla) {
         speak(label, settings);

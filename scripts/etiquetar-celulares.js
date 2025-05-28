@@ -1,10 +1,7 @@
     const fs = require('fs');
     const path = require('path');
-
-    // 🔧 Ruta actualizada a db.json dentro de FONY-API
     const jsonPath = path.join(__dirname, '../../../Fony-api/db.json');
 
-    // Reglas base para generar etiquetas
     const reglas = {
     fotografia: { camara: 8, edicion: 6 },
     multimedia: { video: 7, camara: 6 },
@@ -34,7 +31,7 @@
     );
     };
 
-    // Cargar y procesar
+    // Cargamos y procesamos
     const db = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
     const celulares = db.celulares;
 
@@ -49,6 +46,6 @@
     return { ...cel, etiquetas: etiquetasLimpias };
     });
 
-    // Guardar db actualizado
+    // En esta parte se guarda el db actualizado
     fs.writeFileSync(jsonPath, JSON.stringify({ celulares: actualizados }, null, 2), 'utf8');
     console.log(`✅ Archivo actualizado: db.json con ${actualizados.length} dispositivos.`);

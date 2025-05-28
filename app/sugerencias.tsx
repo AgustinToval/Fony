@@ -9,6 +9,7 @@
     import { useCallback, useEffect, useState } from 'react';
     import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+    // Tipo para los datos de un celular
     type Celular = {
     id: string;
     nombre: string;
@@ -51,6 +52,7 @@
         }, [settings.lectorPantalla, lang])
     );
 
+    // Normaliza los términos del uso ideal para unificar criterios
     const normalizarUso = (u: string) =>
         ['multimedia', 'fotografia', 'video'].includes(u.toLowerCase()) ? 'multimedia' :
         ['gaming', 'juegos'].includes(u.toLowerCase()) ? 'gaming' :
@@ -59,6 +61,7 @@
         ['otro', 'general'].includes(u.toLowerCase()) ? 'otro' :
         u.toLowerCase();
 
+    // Algoritmo de cálculo de puntaje según las preferencias del usuario
     const calcularPuntaje = (cel: Celular): number => {
         if (!preferencias.sliders || !cel.etiquetas) return 0;
         return Object.entries(preferencias.sliders).reduce((total, [subuso, importancia]) => {
@@ -67,6 +70,7 @@
         }, 0);
     };
 
+    // Filtrado y selección de celulares sugeridos según coincidencias y puntaje
     useEffect(() => {
         getCelulares().then((celulares: Celular[]) => {
         const usoPreferido = normalizarUso(preferencias.uso || '');

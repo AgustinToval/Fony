@@ -1,12 +1,10 @@
     const fs = require('fs');
     const path = require('path');
-
-    // 🔧 Ruta a db.json de FONY-API
     const dataPath = path.join(__dirname, '../../../Fony-api/db.json');
     const imagesDir = path.join(__dirname, '../assets/images');
     const outputPath = path.join(__dirname, '../utils/getImage.ts');
 
-    // Cargar celulares desde db.json
+    // cargamos los celulares desde db.json
     const db = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
     const celulares = db.celulares;
 
@@ -38,7 +36,7 @@
     fs.writeFileSync(outputPath, fileContent, 'utf-8');
     console.log(`✅ Archivo generado: utils/getImage.ts con ${lines.length} entradas.`);
 
-    // Verificación
+    // realiza una verificación
     if (missingFiles.length > 0) {
     console.warn('\n⚠️ Archivos de imagen NO encontrados:');
     missingFiles.forEach(({ id, file }) => {

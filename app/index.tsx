@@ -5,11 +5,13 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+// Pantalla de bienvenida inicial. Introduce brevemente la app y permite iniciar el recorrido.
 export default function Index() {
   const router = useRouter();
   const { settings } = useAppSettings();
   const lang = settings.idioma;
 
+    // cuando se muestra la pantalla, se reproduce un mensaje introductorio si el lector está activo
   useFocusEffect(
     useCallback(() => {
       if (settings.lectorPantalla) {
@@ -24,11 +26,12 @@ export default function Index() {
     }, [settings])
   );
 
+    // Al presionar el botón, se lee el texto y se navega a la siguiente pantalla
   const handleStart = () => {
     if (settings.lectorPantalla) {
       speak(t('index.boton', lang), settings);
     }
-    setTimeout(() => router.push('/perfil'), 800);
+    setTimeout(() => router.push('/perfil'), 800); // Pequeña pausa para permitir oír el mensaje
   };
 
   return (

@@ -9,6 +9,7 @@ import * as Speech from 'expo-speech';
 import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+// Pantalla principal de la app. Punto de entrada con accesos a las secciones clave.
     export default function Home() {
     const router = useRouter();
     const { settings } = useAppSettings();
@@ -18,6 +19,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     const subtitleFont = getFontSize('medium', settings.tamanioLetra);
     const buttonFont = getFontSize('medium', settings.tamanioLetra);
 
+      // Anuncia la pantalla si el lector está activado. Se para al salir para evitar solapamientos.
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -25,14 +27,15 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
         }
 
         return () => {
-            Speech.stop(); // ⬅️ Detener lectura al salir de la pantalla
+            Speech.stop(); // Detiene el lector al cambiar de pantalla
         };
         }, [settings])
     );
 
+    // Función genérica para manejar los botones con feedback por voz y navegación
     const manejarBoton = (destino: string, mensaje: string) => {
         if (settings.lectorPantalla) speak(mensaje, settings);
-        setTimeout(() => router.push(destino as any), 1500); // ⬅️ Más tiempo para que se escuche completo
+        setTimeout(() => router.push(destino as any), 1500); // Da tiempo a que se escuche el mensaje
     };
 
     return (

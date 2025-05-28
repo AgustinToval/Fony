@@ -11,8 +11,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     const router = useRouter();
     const { settings } = useAppSettings();
     const lang = settings.idioma;
+
     const yaLeido = useRef(false); // Para evitar repetición dentro de una misma visita
 
+    // Opciones disponibles de uso principal del teléfono
     const usos = [
         { label: t('uso.redes', lang), value: 'redes' },
         { label: t('uso.multimedia', lang), value: 'multimedia' },
@@ -21,6 +23,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
         { label: t('uso.otro', lang), value: 'otro' },
     ];
 
+    // Al seleccionar un uso, se redirige a la pantalla de subusos, pasando el valor seleccionado
     const seleccionarUso = (tipo: string) => {
         router.push({ pathname: '/subuso', params: { uso: tipo } });
     };
@@ -31,6 +34,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
     const titleFont = getFontSize('large', settings.tamanioLetra);
     const buttonFont = getFontSize('medium', settings.tamanioLetra);
 
+    // Activación del lector de pantalla solo una vez por cada entrada a la pantalla
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -45,8 +49,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
             }
         }
 
+        // Al desmontar, se reinicia el estado para permitir repetir el mensaje en próximas visitas
         return () => {
-            yaLeido.current = false; // Resetear al salir de pantalla
+            yaLeido.current = false; 
         };
         }, [settings.lectorPantalla, lang])
     );

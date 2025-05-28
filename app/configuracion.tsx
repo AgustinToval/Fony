@@ -6,10 +6,12 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
+// Pantalla de configuración general de la app
     export default function Configuracion() {
     const { settings, setSettings } = useAppSettings();
     const [modal, setModal] = useState<'tamanio' | 'idioma' | 'moneda' | null>(null);
 
+    // Actualiza la configuración global
     const actualizar = (cambio: Partial<typeof settings>) => {
         setSettings(cambio);
     };
@@ -21,6 +23,8 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
     const labelFont = getFontSize('medium', settings.tamanioLetra);
     const pickerFont = getFontSize('small', settings.tamanioLetra);
 
+
+    // Opciones disponibles para cada configuración
     const opciones = {
         tamanio: [
         { label: t('configuracion.tamanio.pequeno', settings.idioma), value: 'pequeno' },
@@ -37,6 +41,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
         ],
     };
 
+    // Activa el lector si está habilitado en ajustes
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
@@ -45,6 +50,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 're
         }, [settings])
     );
 
+    // Renderiza el modal correspondiente a cada campo configurable
     const renderModal = (tipo: 'tamanio' | 'idioma' | 'moneda') => (
         <Modal transparent animationType="fade" visible={modal === tipo}>
         <View style={styles.modalOverlay}>
