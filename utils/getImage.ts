@@ -1,18 +1,56 @@
-    // ⚠️ Archivo generado automáticamente desde generateImageMap.js
+// ⚠️ Archivo generado automáticamente desde generateImageMap.js
 
-const imageMap: Record<string, any> = {
-    s23: require('@/assets/images/s23.png'),
-    iphone13: require('@/assets/images/iphone13.png'),
-    motoe32: require('@/assets/images/motoe32.png'),
-    redminote12: require('@/assets/images/redminote12.png'),
-    a14: require('@/assets/images/a14.png'),
-    xiaomi13: require('@/assets/images/xiaomi13.png'),
-    pixel6a: require('@/assets/images/pixel6a.png'),
-    realme11pro: require('@/assets/images/realme11pro.png'),
-    nokiaG22: require('@/assets/images/nokiaG22.png'),
-    honor90: require('@/assets/images/honor90.png'),
-};
+    const imageMap: Record<string, any> = {
+      s23: require('@/assets/images/s23.png'),
+  iphone13: require('@/assets/images/iphone13.png'),
+  motoe32: require('@/assets/images/motoe32.png'),
+  redminote12: require('@/assets/images/redminote12.png'),
+  a14: require('@/assets/images/a14.png'),
+  xiaomi13: require('@/assets/images/xiaomi13.png'),
+  pixel6a: require('@/assets/images/pixel6a.png'),
+  realme11pro: require('@/assets/images/realme11pro.png'),
+  nokiaG22: require('@/assets/images/nokiaG22.png'),
+  honor90: require('@/assets/images/honor90.png'),
+  oppoReno8: require('@/assets/images/oppoReno8.png'),
+  vivoV21: require('@/assets/images/vivoV21.png'),
+  infinixZero5G: require('@/assets/images/infinixZero5G.png'),
+  zteBladeV40: require('@/assets/images/zteBladeV40.png'),
+  realmeC55: require('@/assets/images/realmeC55.png'),
+  lenovoK13Note: require('@/assets/images/lenovoK13Note.png'),
+  alcatel1S: require('@/assets/images/alcatel1S.png'),
+  tcl30SE: require('@/assets/images/tcl30SE.png'),
+  doogeeN40Pro: require('@/assets/images/doogeeN40Pro.png'),
+  blackviewA95: require('@/assets/images/blackviewA95.png'),
+  motorolaG73: require('@/assets/images/motorolaG73.png'),
+  nubiaRedMagic7: require('@/assets/images/nubiaRedMagic7.png'),
+  sonyXperia10IV: require('@/assets/images/sonyXperia10IV.png'),
+  asusZenfone9: require('@/assets/images/asusZenfone9.png'),
+  meizu18: require('@/assets/images/meizu18.png'),
+  onePlusNordCE3: require('@/assets/images/onePlusNordCE3.png'),
+  itelVision5: require('@/assets/images/itelVision5.png'),
+  umidigiPower7: require('@/assets/images/umidigiPower7.png'),
+  elephoneE10Pro: require('@/assets/images/elephoneE10Pro.png'),
+  oukitelC25: require('@/assets/images/oukitelC25.png'),
+  catS62Pro: require('@/assets/images/catS62Pro.png'),
+  doogeeS97Pro: require('@/assets/images/doogeeS97Pro.png'),
+  fairphone4: require('@/assets/images/fairphone4.png'),
+  gigasetGS5: require('@/assets/images/gigasetGS5.png'),
+  ulefoneNote11P: require('@/assets/images/ulefoneNote11P.png'),
+  blubooS1: require('@/assets/images/blubooS1.png'),
+  cubotX30: require('@/assets/images/cubotX30.png'),
+  hisenseE50Lite: require('@/assets/images/hisenseE50Lite.png'),
+  bqAquarisX2: require('@/assets/images/bqAquarisX2.png'),
+  leEcoLePro3: require('@/assets/images/leEcoLePro3.png'),
+  energizerPowerMax: require('@/assets/images/energizerPowerMax.png'),
+  sharpAquosR6: require('@/assets/images/sharpAquosR6.png'),
+  asusZenfone8: require('@/assets/images/asusZenfone8.png'),
+  honorX8a: require('@/assets/images/honorX8a.png'),
+  oneplusNordN20: require('@/assets/images/oneplusNordN20.png'),
+  vsmartJoy4: require('@/assets/images/vsmartJoy4.png'),
+  zteAxon30: require('@/assets/images/zteAxon30.png'),
+    };
 
-export const getImage = (filename: string) => {
+    export const getImage = (filename: string) => {
     return imageMap[filename] ?? require('@/assets/images/default.png');
-};
+    };
+    

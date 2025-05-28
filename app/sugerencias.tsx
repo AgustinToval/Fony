@@ -1,13 +1,13 @@
     import { useUserPreferences } from '@/context/UserPreferencesContext';
-import { useAppSettings } from '@/hooks/useAppSettings';
-import { getCelulares } from '@/utils/api';
-import { getFontSize } from '@/utils/getFontSize';
-import { getImage } from '@/utils/getImage';
-import { t } from '@/utils/i18n';
-import { speak, stopSpeech } from '@/utils/speak';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+    import { useAppSettings } from '@/hooks/useAppSettings';
+    import { getCelulares } from '@/utils/api';
+    import { getFontSize } from '@/utils/getFontSize';
+    import { getImage } from '@/utils/getImage';
+    import { t } from '@/utils/i18n';
+    import { speak, stopSpeech } from '@/utils/speak';
+    import { useFocusEffect, useRouter } from 'expo-router';
+    import { useCallback, useEffect, useState } from 'react';
+    import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
     type Celular = {
     id: string;
@@ -46,10 +46,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     useFocusEffect(
         useCallback(() => {
         if (settings.lectorPantalla) {
-            speak(
-            `${t('sugerencias.titulo', lang)}. ${t('sugerencias.subtitulo', lang)}`,
-            settings
-            );
+            speak(`${t('sugerencias.titulo', lang)}. ${t('sugerencias.subtitulo', lang)}`, settings);
         }
         }, [settings.lectorPantalla, lang])
     );
@@ -74,6 +71,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
         getCelulares().then((celulares: Celular[]) => {
         const usoPreferido = normalizarUso(preferencias.uso || '');
 
+        // Coincidencias estrictas
         let resultados = celulares.filter((cel) => {
             const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
             const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
@@ -99,29 +97,34 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
             .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
             setUsoFiltroFlexible(false);
             setSinCoincidencias(false);
-            setSugeridos(conPuntaje.slice(0, 3));
+            setSugeridos(conPuntaje.slice(0, 5));
             return;
         }
 
-        resultados = celulares.filter((cel) => {
-            const coincidePresupuesto = cel.precio <= (preferencias.presupuesto ?? Infinity);
-            const coincideUso = cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido);
-            return coincidePresupuesto && coincideUso;
-        });
-
-        if (resultados.length > 0) {
-            const conPuntaje = resultados
+        // Coincidencias relajadas por uso y presupuesto
+        resultados = celulares
+            .filter((cel) =>
+            cel.precio <= (preferencias.presupuesto ?? Infinity) &&
+            cel.usoIdeal.map((u) => u.toLowerCase()).includes(usoPreferido)
+            )
             .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
             .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
+
+        if (resultados.length > 0) {
             setUsoFiltroFlexible(true);
             setSinCoincidencias(false);
-            setSugeridos(conPuntaje.slice(0, 3));
+            setSugeridos(resultados.slice(0, 5));
             return;
         }
+
+        // Último recurso: top por puntaje general
+        const conPuntaje = celulares
+            .map((cel) => ({ ...cel, puntaje: calcularPuntaje(cel) }))
+            .sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0));
 
         setUsoFiltroFlexible(true);
         setSinCoincidencias(true);
-        setSugeridos(celulares.slice(0, 3));
+        setSugeridos(conPuntaje.slice(0, 5));
         });
     }, [preferencias]);
 
@@ -179,6 +182,11 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
     image: { width: 150, height: 150, resizeMode: 'contain', marginBottom: 10 },
     name: { fontWeight: 'bold', marginBottom: 5 },
     summary: { textAlign: 'center', marginBottom: 10 },
-    button: { backgroundColor: '#2563eb', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 },
+    button: {
+        backgroundColor: '#2563eb',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
     buttonText: { color: '#fff', fontSize: 14 },
     });
